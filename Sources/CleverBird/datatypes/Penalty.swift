@@ -2,7 +2,6 @@ import Foundation
 
 /// Represents a value that can be between `-2.0` and `2.0`.
 public struct Penalty: Equatable {
-  /// The actual value.
   public let value: Decimal
   
   /// Creates the penalty value, clamped between `-2.0` and `2.0`.

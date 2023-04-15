@@ -23,7 +23,6 @@ extension Percentage {
 
 extension Percentage: ExpressibleByFloatLiteral {
   /// Allows the ``Percentage`` to be created via direct assignment from a `Double`.
-  /// - Parameter value: The double value.
   public init(floatLiteral value: Double) {
     self.init(Decimal(value))
   }
