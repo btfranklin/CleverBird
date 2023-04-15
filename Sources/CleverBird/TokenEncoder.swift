@@ -1,9 +1,5 @@
-// Byte pair encoding utilities
-// Ported from https://github.com/openai/gpt-2/blob/master/src/encoder.py
-
 import Foundation
 
-/// Represents a pair of symbols. Used during encoding.
 fileprivate struct SymbolPair: Hashable {
     let left: String
     let right: String
@@ -15,27 +11,16 @@ fileprivate struct SymbolPair: Hashable {
     }
 }
 
-/// Returns list of utf-8 byte and a corresponding list of unicode strings.
-/// The reversible bpe codes work on unicode strings.
-/// This means you need a large # of unicode characters in your vocab if you want to avoid UNKs.
-/// When you're at something like a 10B token dataset you end up needing around 5K for decent coverage.
-/// This is a signficant percentage of your normal, say, 32K bpe vocab.
-/// To avoid that, we want lookup tables between utf-8 bytes and unicode strings.
-/// And avoids mapping to whitespace/control characters the bpe code barfs on.
-///
-/// - Returns a dictionary mapping ``UInt8`` values to the ``String`` equivalent.
 fileprivate func bytesToUnicode() -> [UInt8: Character] {
     var dict = [UInt8: Character]()
-
     var n: UInt16 = 0
+
     for b: UInt8 in 0...255 {
         switch b {
-        case 33...126, // '!' to '~'
-            161...172, // '¡' to '¬'
-            174...255: // '®' to 'ÿ'
+        case 33...126, 161...172, 174...255:
             dict[b] = Character(UnicodeScalar(b))
-        default: // prepare additional characters to fill in the gaps
-            dict[b] = Character(UnicodeScalar(256+n)!)
+        default:
+            dict[b] = Character(UnicodeScalar(256 + n)!)
             n += 1
         }
     }
@@ -43,76 +28,43 @@ fileprivate func bytesToUnicode() -> [UInt8: Character] {
     return dict
 }
 
-/// Return set of symbol pairs in a `word`.
-/// Word is represented as tuple of symbols (symbols being variable-length strings).
-///
-/// - Parameter word: The list of symbols that make up the `word`.
-/// - Returns The set of ``SymbolPair`` values in the word.
-fileprivate func getPairs(word: [String]) -> Set<SymbolPair> {
+fileprivate func getPairs(in word: [String]) -> Set<SymbolPair> {
     var pairs = Set<SymbolPair>()
     var prevChar = word[0]
+
     for char in word[1..<word.count] {
-        pairs.insert(.init(prevChar, char))
+        pairs.insert(SymbolPair(prevChar, char))
         prevChar = char
     }
+
     return pairs
 }
 
-/// Provides the ability to ``encode(text:)`` (from text into tokens) and ``decode(tokens:)`` (from tokens into text).
 public struct TokenEncoder {
-    // Should haved added re.IGNORECASE so BPE merges can happen for capitalized versions of contractions
-    static let pattern: Pattern = #"'s|'t|'re|'ve|'m|'ll|'d| ?\p{L}+| ?\p{N}+| ?[^\s\p{L}\p{N}]+|\s+(?!\S)|\s+"#
+    static let pattern: Pattern = Pattern(#"'s|'t|'re|'ve|'m|'ll|'d| ?\p{L}+| ?\p{N}+| ?[^\s\p{L}\p{N}]+|\s+(?!\S)|\s+"#, options: [.caseInsensitive])
 
-    /// The UTF-8 byte encoder. Maps
     static let byteEncoder: [UInt8: Character] = bytesToUnicode()
-    static let byteDecoder: [Character: UInt8] = {
-        var result: [Character: UInt8] = [:]
-        for (key, value) in Self.byteEncoder {
-            result[value] = key
-        }
-        return result
-    }()
+    static let byteDecoder: [Character: UInt8] = Dictionary(uniqueKeysWithValues: byteEncoder.map { ($1, $0) })
 
-    /// The `text` -> `token` encoder.
     let encoder: [String: Token]
-
-    /// The `token` -> `text` decoder.
     let decoder: [Token: String]
-
-    /// The BPE Rankings for given ``SymbolPair`` values.
     fileprivate let bpeRanks: [SymbolPair: Int]
 
-    /// Creates a new encoder with an optional ``Model``.
-    ///
-    /// - Parameters model: The model to use (defaults to ``Model/gpt3``).
-    /// - Throws errors if unable to load the required resources for the encoder.
     public init(model: Model = .gpt3) throws {
         encoder = try model.encoder()
-        decoder = encoder.reduce(into: [Token: String]()) { result, item in
-            result[item.value] = item.key
-        }
-
+        decoder = Dictionary(uniqueKeysWithValues: encoder.map { ($1, $0) })
         bpeRanks = try model.bpeRanks()
     }
 
-    /// Perform Byte-Pair Encoding (BPE) of the `token`, making use of the model's BPE Ranks.
-    ///
-    /// - Parameter token: The token to encode.
-    /// - Returns The encoded token.
     fileprivate func bpe(token: String) -> String {
-        var word: [String] = Array(token).map { String($0) }
-        var pairs: Set<SymbolPair> = getPairs(word: word)
+        var word: [String] = token.map { String($0) }
+        var pairs: Set<SymbolPair> = getPairs(in: word)
         if pairs.isEmpty {
             return token
         }
         while true {
-            let bigram = pairs.min { bpeRanks[$0] ?? Int.max < bpeRanks[$1] ?? Int.max }
-
-            guard let bigram = bigram else { break }
-
-            guard bpeRanks[.init(bigram.left, bigram.right)] != nil else {
-                break
-            }
+            guard let bigram = pairs.min(by: { bpeRanks[$0] ?? Int.max < bpeRanks[$1] ?? Int.max }),
+                  let _ = bpeRanks[bigram] else { break }
 
             let first = bigram.left
             let second = bigram.right
@@ -139,50 +91,34 @@ public struct TokenEncoder {
             if word.count == 1 {
                 break
             } else {
-                pairs = getPairs(word: word)
+                pairs = getPairs(in: word)
             }
         }
-        let wordString = word.joined(separator: " ")
-        return wordString
+
+        return word.joined(separator: " ")
     }
 
-    /// Encodes the provided `text` into an array of tokens.
-    ///
-    /// - Parameter text: The text to encode.
-    /// - Returns the list of tokens.
     public func encode(text: String) throws -> [Token] {
         var bpeTokens: [Token] = []
         var cache = [String: String]()
 
-        // split the text into chunks
         for result in TokenEncoder.pattern.findAll(in: text) {
-            // get the chunk as a UTF-8 UInt8 array
-            let utf8View = result.value.utf8
-            // use the byte encoder to convert the bytes back into characters
-            let token = String(utf8View.map { TokenEncoder.byteEncoder[$0]! })
-            // run bpe on the token and split it where there are spaces
+            let token = String(result.value.utf8.map { TokenEncoder.byteEncoder[$0]! })
             let word = cache[token] ?? bpe(token: token)
             cache[token] = word
 
             let splitBpe = word.split(separator: " ")
-            // encode the BPE result
             let encodedResult = try splitBpe.map {
                 guard let value = encoder[String($0)] else {
                     throw TokenEncoder.Error.invalidEncoding(value: String($0))
                 }
                 return value
             }
-            // add the results to the list of bpe tokens
             bpeTokens.append(contentsOf: encodedResult)
         }
         return bpeTokens
     }
 
-    /// Decodes the provided `tokens` into the original text string.
-    ///
-    /// - Parameter tokens: The tokens to decode.
-    /// - Returns the decoded text
-    /// - Throws an error if invalid tokens are provided.
     public func decode(tokens: [Token]) throws -> String {
         let text = try tokens.map {
             guard let value = decoder[$0] else {
@@ -203,7 +139,6 @@ public struct TokenEncoder {
 }
 
 extension TokenEncoder {
-    /// The errors that can be thrown during the encoding process.
     public enum Error: Swift.Error, Equatable {
         case missingResource(name: String)
         case invalidBytePair(value: String)
@@ -214,23 +149,20 @@ extension TokenEncoder {
 }
 
 extension TokenEncoder {
-    /// The model for the encoder. Currently just supports GPT-3 (same as GPT-2).
     public enum Model: String {
-        /// Uses the standard GPT-2/GPT-3 encoding model.
         case gpt3
 
-        /// Loads the encoder array, mapping between token strings and their integer representation.
         func encoder() throws -> [String: Token] {
-            guard let encoderPath = Bundle.main.url(forResource: "models/\(rawValue)/encoder", withExtension: "json") else {
-                throw TokenEncoder.Error.missingResource(name: "models/\(rawValue)/encoder.json")
+            guard let encoderPath = Bundle.module.url(forResource: "\(rawValue)-encoder", withExtension: "json") else {
+                throw TokenEncoder.Error.missingResource(name: "\(rawValue)-encoder.json")
             }
             let encoderData = try Data(contentsOf: encoderPath)
             return try JSONDecoder().decode([String: Token].self, from: encoderData)
         }
 
         fileprivate func bpeRanks() throws -> [SymbolPair: Int] {
-            guard let bpePath = Bundle.main.url(forResource: "models/\(rawValue)/vocab", withExtension: "bpe") else {
-                throw TokenEncoder.Error.missingResource(name: "models/\(rawValue)/vocab.bpe")
+            guard let bpePath = Bundle.module.url(forResource: "\(rawValue)-vocab", withExtension: "bpe") else {
+                throw TokenEncoder.Error.missingResource(name: "\(rawValue)-vocab.bpe")
             }
             let bpeData = try String(contentsOf: bpePath, encoding: .utf8)
 
@@ -246,7 +178,7 @@ extension TokenEncoder {
                     return SymbolPair(String(left), String(right))
                 }
 
-            return bpeMerges.enumerated().reduce(into: [SymbolPair: Int]()) {result, item in
+            return bpeMerges.enumerated().reduce(into: [SymbolPair: Int]()) { result, item in
                 result[item.element] = item.offset
             }
         }
