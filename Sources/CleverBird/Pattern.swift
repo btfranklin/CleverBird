@@ -7,11 +7,6 @@ struct Pattern: CustomStringConvertible {
     typealias Options = NSRegularExpression.Options
     typealias MatchingOptions = NSRegularExpression.MatchingOptions
 
-    /// A cache of already-compiled RegExes to improve performance in the common case of heavy re-use.
-    /// Note that only the pattern string itself is used as a key. Selecting different options for the same pattern
-    /// will keep using the original cached version.
-    private static var cache: [String: NSRegularExpression] = [:]
-
     /// The underlying `NSRegularExpression` instance.
     let regex: NSRegularExpression
 
@@ -26,16 +21,11 @@ struct Pattern: CustomStringConvertible {
     ///   - pattern: The pattern to match.
     ///   - options: The options to use when matching.
     init(_ pattern: String, options: Options = []) {
-        if let cachedRegex = Self.cache[pattern] {
-            regex = cachedRegex
-        } else {
-            do {
-                let newRegex = try NSRegularExpression(pattern: pattern, options: options)
-                Self.cache[pattern] = newRegex
-                regex = newRegex
-            } catch {
-                preconditionFailure("Invalid regular expression '\(pattern)': \(error)")
-            }
+        do {
+            let newRegex = try NSRegularExpression(pattern: pattern, options: options)
+            regex = newRegex
+        } catch {
+            preconditionFailure("Invalid regular expression '\(pattern)': \(error)")
         }
     }
 
