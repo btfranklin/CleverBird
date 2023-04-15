@@ -7,6 +7,9 @@ struct Pattern: CustomStringConvertible {
     typealias Options = NSRegularExpression.Options
     typealias MatchingOptions = NSRegularExpression.MatchingOptions
 
+    /// A cache of already-compiled RegExes to improve performance in the common case of heavy re-use.
+    /// Note that only the pattern string itself is used as a key. Selecting different options for the same pattern
+    /// will keep using the original cached version.
     private static var cache: [String: NSRegularExpression] = [:]
 
     /// The underlying `NSRegularExpression` instance.
