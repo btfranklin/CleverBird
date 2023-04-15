@@ -7,6 +7,8 @@ struct Pattern: CustomStringConvertible {
     typealias Options = NSRegularExpression.Options
     typealias MatchingOptions = NSRegularExpression.MatchingOptions
 
+    private static var cache: [String: NSRegularExpression] = [:]
+
     /// The underlying `NSRegularExpression` instance.
     let regex: NSRegularExpression
 
@@ -21,10 +23,16 @@ struct Pattern: CustomStringConvertible {
     ///   - pattern: The pattern to match.
     ///   - options: The options to use when matching.
     init(_ pattern: String, options: Options = []) {
-        do {
-            try regex = NSRegularExpression(pattern: pattern, options: options)
-        } catch {
-            preconditionFailure("Invalid regular expression '\(pattern)': \(error)")
+        if let cachedRegex = Self.cache[pattern] {
+            regex = cachedRegex
+        } else {
+            do {
+                let newRegex = try NSRegularExpression(pattern: pattern, options: options)
+                Self.cache[pattern] = newRegex
+                regex = newRegex
+            } catch {
+                preconditionFailure("Invalid regular expression '\(pattern)': \(error)")
+            }
         }
     }
 
