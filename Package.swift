@@ -21,8 +21,8 @@ let package = Package(
             name: "CleverBird",
             dependencies: [],
             resources: [
-                .process("models/gpt3/encoder.json"),
-                .process("models/gpt3/vocab.bpe"),
+                .process("models/gpt3-encoder.json"),
+                .process("models/gpt3-vocab.bpe"),
             ]),
         .testTarget(
             name: "CleverBirdTests",
