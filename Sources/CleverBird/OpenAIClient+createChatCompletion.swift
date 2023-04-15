@@ -43,7 +43,7 @@ extension OpenAIClient {
         do {
             httpBodyJson = try JSONSerialization.data(withJSONObject: nonNilHttpBody, options: .prettyPrinted)
         } catch {
-            print("Unable to convert to JSON \(error)")
+            logger?("Unable to convert to JSON \(error)")
             return nil
         }
 
@@ -76,7 +76,13 @@ public struct ChatChoice: Codable {
     }
 }
 
+public enum ChatRole: String, Codable {
+    case system
+    case user
+    case assistant
+}
+
 public struct ChatMessage: Codable {
-    public let role: String
+    public let role: ChatRole
     public let content: String
 }

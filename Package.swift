@@ -14,7 +14,6 @@ let package = Package(
             targets: ["CleverBird"]),
     ],
     dependencies: [
-
     ],
     targets: [
         .target(
