@@ -2,7 +2,7 @@
 
 import Foundation
 
-extension OpenAIClient {
+extension OpenAIAPIConnection {
 
     public func createChatCompletion(model: Model = .gpt4,
                                      messages: [[String:Any]],
@@ -51,12 +51,26 @@ extension OpenAIClient {
         do {
             let requestData = try await executeRequest(request: request, withSessionConfig: nil)
             let jsonStr = String(data: requestData, encoding: String.Encoding(rawValue: String.Encoding.utf8.rawValue))!
-            let responseHandler = OpenAIResponseHandler()
-            return responseHandler.decodeChatCompletionJson(jsonString: jsonStr)
+            return decodeChatCompletionJson(jsonString: jsonStr)
         } catch {
             logger?("Error executing request: \(error.localizedDescription)")
             return nil
         }
+    }
+
+    func decodeChatCompletionJson(jsonString: String) -> ChatCompletionResponse? {
+        let json = jsonString.data(using: .utf8)!
+
+        let decoder = JSONDecoder()
+        do {
+            let product = try decoder.decode(ChatCompletionResponse.self, from: json)
+            return product
+
+        } catch {
+            logger?("Error decoding ChatCompletion OpenAI API Response: \(error)")
+        }
+
+        return nil
     }
 
 }
