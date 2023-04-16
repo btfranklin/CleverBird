@@ -94,11 +94,11 @@ public class OpenAIChatThread {
             return nil
         }
 
-        do {
-            let urlRequester = self.connection.urlRequester
-            let jsonStr = try await urlRequester.executeRequest(request, withSessionConfig: nil)
+        let urlRequester = self.connection.urlRequester
+        let result = await urlRequester.executeRequest(request, withSessionConfig: nil)
+        switch result {
+        case .success(let jsonStr):
             let json = jsonStr.data(using: .utf8)!
-
             let decoder = JSONDecoder()
             do {
                 let product = try decoder.decode(ChatCompletionResponse.self, from: json)
@@ -107,7 +107,7 @@ public class OpenAIChatThread {
                 logger("Error decoding ChatCompletion OpenAI API Response: \(error)")
                 return nil
             }
-        } catch {
+        case .failure(let error):
             logger("Error executing request: \(error.localizedDescription)")
             return nil
         }

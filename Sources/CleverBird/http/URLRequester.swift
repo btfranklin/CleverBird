@@ -4,5 +4,9 @@ import Foundation
 
 public protocol URLRequester {
     func executeRequest(_ request: URLRequest,
-                        withSessionConfig sessionConfig: URLSessionConfiguration?) async throws -> JSONString
+                        withSessionConfig sessionConfig: URLSessionConfiguration?) async -> Result<JSONString, Error>
+}
+
+public enum RequestError: Error {
+    case requestFailed(String)
 }

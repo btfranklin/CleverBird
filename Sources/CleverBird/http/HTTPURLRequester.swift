@@ -15,24 +15,25 @@ struct HTTPURLRequester: URLRequester {
     }
 
     func executeRequest(_ request: URLRequest,
-                        withSessionConfig sessionConfig: URLSessionConfiguration? = nil) async throws -> JSONString {
+                        withSessionConfig sessionConfig: URLSessionConfiguration?) async -> Result<JSONString, Error> {
         let session: URLSession
-        if let config = sessionConfig {
-            session = URLSession(configuration: config)
+        if let sessionConfig {
+            session = URLSession(configuration: sessionConfig)
         } else {
             session = URLSession.shared
         }
 
-        let (data, response) = try await session.data(for: request)
-        if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode != 200 {
-            let error = RequestError.requestFailed("HTTP Status Code: \(httpResponse.statusCode)")
+        do {
+            let (data, response) = try await session.data(for: request)
+            if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode != 200 {
+                let error = RequestError.requestFailed("HTTP Status Code: \(httpResponse.statusCode)")
+                logger("Request failed: \(error.localizedDescription)")
+                return .failure(error)
+            }
+            return .success(JSONString(data: data, encoding: String.Encoding(rawValue: String.Encoding.utf8.rawValue)) ?? "{}")
+        } catch {
             logger("Request failed: \(error.localizedDescription)")
-            throw error
+            return .failure(error)
         }
-        return JSONString(data: data, encoding: String.Encoding(rawValue: String.Encoding.utf8.rawValue)) ?? "{}"
     }
-}
-
-enum RequestError: Error {
-    case requestFailed(String)
 }
