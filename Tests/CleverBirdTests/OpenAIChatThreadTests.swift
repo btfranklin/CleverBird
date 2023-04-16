@@ -66,5 +66,17 @@ class OpenAIChatThreadTests: XCTestCase {
                        "The 2020 World Series was won by the Los Angeles Dodgers.", "Unexpected assistant response")
 
     }
-}
 
+    func testTokenCount() {
+        let openAIAPIConnection = OpenAIAPIConnection(apiKey: "fake_api_key", urlRequester: MockURLRequester(response: ""))
+        let chatThread = OpenAIChatThread(connection: openAIAPIConnection)
+
+        chatThread.addSystemMessage(content: "You are a helpful assistant.")
+        chatThread.addUserMessage(content: "Who won the world series in 2020?")
+
+        let tokenCount = chatThread.tokenCount()
+
+        XCTAssertEqual(tokenCount, 25, "Unexpected token count")
+    }
+
+}
