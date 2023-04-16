@@ -5,7 +5,6 @@ public struct Percentage: Equatable {
   public let value: Decimal
   
   /// Creates the percentage, clamping between `0.0` and `1.0`.
-  /// - Parameter value: The value.
   public init(_ value: Decimal) {
     self.value = Self.clamp(value)
   }
@@ -13,9 +12,6 @@ public struct Percentage: Equatable {
 
 extension Percentage {
   /// Clamps the value between `0.0` and `1.0`.
-  ///
-  /// - Parameter value: The value to clamp.
-  /// - Returns the clamped value.
   public static func clamp(_ value: Decimal) -> Decimal {
     return min(1.0, max(0.0, value))
   }

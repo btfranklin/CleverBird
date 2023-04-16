@@ -5,7 +5,6 @@ public struct Penalty: Equatable {
   public let value: Decimal
   
   /// Creates the penalty value, clamped between `-2.0` and `2.0`.
-  /// - Parameter value: The value.
   public init(_ value: Decimal) {
     self.value = Self.clamp(value)
   }
@@ -13,16 +12,13 @@ public struct Penalty: Equatable {
 
 extension Penalty {
   /// Clamps the value between `-2.0` and `2.0`.
-  ///
-  /// - Parameter value: The value to clamp.
-  /// - Returns: The clamped value.
   public static func clamp(_ value: Decimal) -> Decimal {
     return min(2.0, max(-2.0, value))
   }
 }
 
 extension Penalty: ExpressibleByFloatLiteral {
-  /// Allows creation of a penalty directly with a `Double`.
+  /// Allows creation of a ``Penalty`` directly with a `Double`.
   public init(floatLiteral value: Double) {
     self.init(Decimal(value))
   }
