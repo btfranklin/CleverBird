@@ -3,6 +3,6 @@
 import Foundation
 
 public protocol URLRequester {
-    func executeRequest(request: URLRequest,
+    func executeRequest(_ request: URLRequest,
                         withSessionConfig sessionConfig: URLSessionConfiguration?) async throws -> JSONString
 }
