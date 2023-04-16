@@ -11,12 +11,12 @@
 //     - ChatRole
 
 public struct ChatCompletionResponse: Codable {
-    public let model: String
+    public let model: Model
     public let choices: [ChatChoice]
 }
 
 public struct ChatCompletionRequest: Codable {
-    public let model: String
+    public let model: Model
     public let temperature: Percentage
     public let top_p: Percentage?
     public let n: Int?

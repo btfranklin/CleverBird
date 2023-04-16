@@ -74,7 +74,7 @@ public class OpenAIChatThread {
         }
 
         let requestBody = ChatCompletionRequest(
-            model: self.model.rawValue,
+            model: self.model,
             temperature: self.temperature,
             top_p: self.top_p,
             n: self.numberOfCompletionsToCreate,
