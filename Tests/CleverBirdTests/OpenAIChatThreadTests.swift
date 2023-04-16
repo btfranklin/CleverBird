@@ -14,7 +14,7 @@ class OpenAIChatThreadTests: XCTestCase {
             self.logger = { message in print(message) }
         }
 
-        func executeRequest(_ request: URLRequest, withSessionConfig sessionConfig: URLSessionConfiguration?) async -> Result<CleverBird.JSONString, Error> {
+        func executeRequest(_ request: URLRequest, withSessionConfig sessionConfig: URLSessionConfiguration?) async -> Result<JSONString, Error> {
             logger("Request URL: \(request.url!)")
             if let httpBody = request.httpBody, let json = try? JSONSerialization.jsonObject(with: httpBody, options: []) {
                 logger("Request JSON:")
@@ -32,7 +32,7 @@ class OpenAIChatThreadTests: XCTestCase {
             "id": "chatcmpl-6p9XYPYSTTRi0xEviKjjilqrWU2Ve",
             "object": "chat.completion",
             "created": 1677649420,
-            "model": "gpt-3.5-turbo",
+            "model": "gpt-4",
             "usage": {
                 "prompt_tokens": 56,
                 "completion_tokens": 31,
@@ -53,7 +53,7 @@ class OpenAIChatThreadTests: XCTestCase {
 
         let mockURLRequester = MockURLRequester(response: mockResponse)
 
-        let openAIAPIConnection = OpenAIAPIConnection(apiKey: "your_api_key", urlRequester: mockURLRequester)
+        let openAIAPIConnection = OpenAIAPIConnection(apiKey: "fake_api_key", urlRequester: mockURLRequester)
         let chatThread = OpenAIChatThread(connection: openAIAPIConnection)
 
         chatThread.addSystemMessage(content: "You are a helpful assistant.")
