@@ -8,7 +8,7 @@ public struct OpenAIAPIConnection {
     let apiKey: String
     let organization: String?
 
-    public init(apiKey: String, organization: String? = nil, urlRequester: URLRequester?) {
+    public init(apiKey: String, organization: String? = nil, urlRequester: URLRequester? = nil) {
         self.apiKey = apiKey
         self.organization = organization
         self.urlRequester = urlRequester ?? HTTPURLRequester()
