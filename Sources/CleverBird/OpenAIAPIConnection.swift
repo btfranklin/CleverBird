@@ -4,13 +4,13 @@ import Foundation
 
 public struct OpenAIAPIConnection {
 
-    let logger: Logger?
+    let urlRequester: URLRequester
     let apiKey: String
     let organization: String?
 
-    public init(apiKey: String, organization: String? = nil, logger: Logger? = nil) {
+    public init(apiKey: String, organization: String? = nil, urlRequester: URLRequester?) {
         self.apiKey = apiKey
         self.organization = organization
-        self.logger = logger
+        self.urlRequester = urlRequester ?? HTTPURLRequester()
     }
 }

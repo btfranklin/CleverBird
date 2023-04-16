@@ -2,11 +2,11 @@
 
 import Foundation
 
-struct HTTPRequester {
+struct HTTPURLRequester: URLRequester {
 
-    let logger: Logger?
+    private let logger: Logger?
 
-    init(logger: Logger?) {
+    init(logger: Logger? = nil) {
         self.logger = logger
     }
 
