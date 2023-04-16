@@ -49,8 +49,7 @@ extension OpenAIAPIConnection {
 
         request.httpBody = httpBodyJson
         do {
-            let requestData = try await executeRequest(request: request, withSessionConfig: nil)
-            let jsonStr = String(data: requestData, encoding: String.Encoding(rawValue: String.Encoding.utf8.rawValue))!
+            let jsonStr = try await HTTPRequester(logger: logger).executeRequest(request: request)
             return decodeChatCompletionJson(jsonString: jsonStr)
         } catch {
             logger?("Error executing request: \(error.localizedDescription)")

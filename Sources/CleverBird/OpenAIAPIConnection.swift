@@ -2,10 +2,9 @@
 
 import Foundation
 
-public struct OpenAIAPIConnection: APIConnection {
+public struct OpenAIAPIConnection {
 
-    public let logger: Logger?
-
+    let logger: Logger?
     let apiKey: String
     let organization: String?
 
