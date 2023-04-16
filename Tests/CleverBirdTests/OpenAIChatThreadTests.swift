@@ -64,7 +64,6 @@ class OpenAIChatThreadTests: XCTestCase {
         XCTAssertNotNil(completionResponse, "Completion response is nil")
         XCTAssertEqual(completionResponse?.choices.first?.message.content.trimmingCharacters(in: .whitespacesAndNewlines),
                        "The 2020 World Series was won by the Los Angeles Dodgers.", "Unexpected assistant response")
-
     }
 
     func testTokenCount() {
