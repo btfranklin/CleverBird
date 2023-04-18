@@ -24,17 +24,13 @@ Initialize an OpenAIAPIConnection with your API key:
 let openAIAPIConnection = OpenAIAPIConnection(apiKey: "your_api_key_here")
 ```
 
-Create an OpenAIChatThread instance with the connection:
+Create an OpenAIChatThread instance with the connection, and
+add system, user, or assistant messages to the chat thread:
 
 ```swift
 let chatThread = OpenAIChatThread(connection: openAIAPIConnection)
-```
-
-Add system, user, or assistant messages to the chat thread:
-
-```swift
-chatThread.addSystemMessage(content: "You are a helpful assistant.")
-          .addUserMessage(content: "Who won the world series in 2020?")
+    .addSystemMessage(content: "You are a helpful assistant.")
+    .addUserMessage(content: "Who won the world series in 2020?")
 ```
 
 Generate a completion using the chat thread:

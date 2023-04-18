@@ -55,9 +55,9 @@ class OpenAIChatThreadTests: XCTestCase {
 
         let openAIAPIConnection = OpenAIAPIConnection(apiKey: "fake_api_key", urlRequester: mockURLRequester)
         let chatThread = OpenAIChatThread(connection: openAIAPIConnection)
+            .addSystemMessage(content: "You are a helpful assistant.")
+            .addUserMessage(content: "Who won the world series in 2020?")
 
-        chatThread.addSystemMessage(content: "You are a helpful assistant.")
-        chatThread.addUserMessage(content: "Who won the world series in 2020?")
 
         let completionResponse = await chatThread.complete()
 
@@ -69,9 +69,8 @@ class OpenAIChatThreadTests: XCTestCase {
     func testTokenCount() {
         let openAIAPIConnection = OpenAIAPIConnection(apiKey: "fake_api_key", urlRequester: MockURLRequester(response: ""))
         let chatThread = OpenAIChatThread(connection: openAIAPIConnection)
-
-        chatThread.addSystemMessage(content: "You are a helpful assistant.")
-        chatThread.addUserMessage(content: "Who won the world series in 2020?")
+            .addSystemMessage(content: "You are a helpful assistant.")
+            .addUserMessage(content: "Who won the world series in 2020?")
 
         let tokenCount = chatThread.tokenCount()
 
