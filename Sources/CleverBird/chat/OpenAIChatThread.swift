@@ -41,22 +41,22 @@ public class OpenAIChatThread {
         self.logger = logger ?? Self.DEFAULT_LOGGER
     }
 
-    public func addSystemMessage(content: String) {
+    public func addSystemMessage(content: String) -> Self {
         addMessage(ChatMessage(role: .system, content: content))
     }
 
-    public func addUserMessage(content: String) {
+    public func addUserMessage(content: String) -> Self {
         addMessage(ChatMessage(role: .user, content: content))
     }
 
-    public func addAssistantMessage(content: String) {
+    public func addAssistantMessage(content: String) -> Self {
         addMessage(ChatMessage(role: .assistant, content: content))
     }
 
-    public func addMessage(_ message: ChatMessage) {
+    public func addMessage(_ message: ChatMessage) -> Self {
         messages.append(message)
+        return self
     }
-
 }
 
 extension OpenAIChatThread {
