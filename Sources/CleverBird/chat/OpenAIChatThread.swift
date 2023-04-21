@@ -10,7 +10,6 @@ public class OpenAIChatThread {
     private let model: Model
     private let temperature: Percentage
     private let top_p: Percentage?
-    private let numberOfCompletionsToCreate: Int?
     private let stop: [String]?
     private let presence_penalty: Penalty?
     private let frequency_penalty: Penalty?
@@ -33,7 +32,6 @@ public class OpenAIChatThread {
         self.model = model
         self.temperature = temperature
         self.top_p = top_p
-        self.numberOfCompletionsToCreate = numberOfCompletionsToCreate
         self.stop = stop
         self.presence_penalty = presence_penalty
         self.frequency_penalty = frequency_penalty
@@ -41,15 +39,15 @@ public class OpenAIChatThread {
         self.logger = logger ?? Self.DEFAULT_LOGGER
     }
 
-    public func addSystemMessage(content: String) -> Self {
+    public func addSystemMessage(_ content: String) -> Self {
         addMessage(ChatMessage(role: .system, content: content))
     }
 
-    public func addUserMessage(content: String) -> Self {
+    public func addUserMessage(_ content: String) -> Self {
         addMessage(ChatMessage(role: .user, content: content))
     }
 
-    public func addAssistantMessage(content: String) -> Self {
+    public func addAssistantMessage(_ content: String) -> Self {
         addMessage(ChatMessage(role: .assistant, content: content))
     }
 
@@ -60,7 +58,7 @@ public class OpenAIChatThread {
 }
 
 extension OpenAIChatThread {
-    public func complete() async -> ChatCompletionResponse? {
+    public func complete() async -> ChatMessage? {
 
         var urlComponents = URLComponents()
         urlComponents.scheme = "https"
@@ -80,7 +78,6 @@ extension OpenAIChatThread {
             model: self.model,
             temperature: self.temperature,
             top_p: self.top_p,
-            n: self.numberOfCompletionsToCreate,
             stop: self.stop,
             presence_penalty: self.presence_penalty,
             frequency_penalty: self.frequency_penalty,
@@ -104,12 +101,18 @@ extension OpenAIChatThread {
             let json = jsonStr.data(using: .utf8)!
             let decoder = JSONDecoder()
             do {
-                let product = try decoder.decode(ChatCompletionResponse.self, from: json)
-                return product
+                let response = try decoder.decode(ChatCompletionResponse.self, from: json)
+                if let choice = response.choices.first {
+                    return choice.message
+                } else {
+                    logger("Error decoding ChatCompletion OpenAI API Response: Unable to parse completion")
+                    return nil
+                }
             } catch {
                 logger("Error decoding ChatCompletion OpenAI API Response: \(error)")
                 return nil
             }
+
         case .failure(let error):
             logger("Error executing request: \(error.localizedDescription)")
             return nil

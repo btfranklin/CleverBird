@@ -55,22 +55,22 @@ class OpenAIChatThreadTests: XCTestCase {
 
         let openAIAPIConnection = OpenAIAPIConnection(apiKey: "fake_api_key", urlRequester: mockURLRequester)
         let chatThread = OpenAIChatThread(connection: openAIAPIConnection)
-            .addSystemMessage(content: "You are a helpful assistant.")
-            .addUserMessage(content: "Who won the world series in 2020?")
+            .addSystemMessage("You are a helpful assistant.")
+            .addUserMessage("Who won the world series in 2020?")
 
 
-        let completionResponse = await chatThread.complete()
+        let completion = await chatThread.complete()
 
-        XCTAssertNotNil(completionResponse, "Completion response is nil")
-        XCTAssertEqual(completionResponse?.choices.first?.message.content.trimmingCharacters(in: .whitespacesAndNewlines),
+        XCTAssertNotNil(completion, "Completion is nil")
+        XCTAssertEqual(completion?.content.trimmingCharacters(in: .whitespacesAndNewlines),
                        "The 2020 World Series was won by the Los Angeles Dodgers.", "Unexpected assistant response")
     }
 
     func testTokenCount() {
         let openAIAPIConnection = OpenAIAPIConnection(apiKey: "fake_api_key", urlRequester: MockURLRequester(response: ""))
         let chatThread = OpenAIChatThread(connection: openAIAPIConnection)
-            .addSystemMessage(content: "You are a helpful assistant.")
-            .addUserMessage(content: "Who won the world series in 2020?")
+            .addSystemMessage("You are a helpful assistant.")
+            .addUserMessage("Who won the world series in 2020?")
 
         let tokenCount = chatThread.tokenCount()
 
