@@ -6,6 +6,7 @@
 [![Swift Package Manager compatible](https://img.shields.io/badge/SPM-compatible-brightgreen.svg?style=flat&colorA=28a745&&colorB=4E4E4E)](https://github.com/apple/swift-package-manager)
 [![GitHub tag](https://img.shields.io/github/tag/btfranklin/CleverBird.svg)](https://github.com/btfranklin/CleverBird)
 [![build](https://github.com/btfranklin/CleverBird/actions/workflows/build.yml/badge.svg)](https://github.com/btfranklin/CleverBird/actions/workflows/build.yml)
+
 `CleverBird` is a Swift Package that provides a convenient way to interact with OpenAI's GPT-4 API and perform various tasks, including token counting and encoding. The package mainly focuses on the `OpenAIClient` and `TokenEncoder` classes.
 
 ## Features
