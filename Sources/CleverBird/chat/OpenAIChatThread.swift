@@ -2,6 +2,13 @@ import Foundation
 
 public class OpenAIChatThread {
 
+    private struct ChatCompletionResponse: Codable {
+        struct Choice: Codable {
+            let message: ChatMessage
+        }
+        let choices: [Choice]
+    }
+
     private static let DEFAULT_LOGGER: Logger = { message in
         print(message)
     }
@@ -9,10 +16,10 @@ public class OpenAIChatThread {
     private let connection: OpenAIAPIConnection
     private let model: Model
     private let temperature: Percentage
-    private let top_p: Percentage?
+    private let topP: Percentage?
     private let stop: [String]?
-    private let presence_penalty: Penalty?
-    private let frequency_penalty: Penalty?
+    private let presencePenalty: Penalty?
+    private let frequencyPenalty: Penalty?
     private let user: String?
     private let logger: Logger
 
@@ -21,20 +28,20 @@ public class OpenAIChatThread {
     public init(connection: OpenAIAPIConnection,
                 model: Model = .gpt4,
                 temperature: Percentage = 0.7,
-                top_p: Percentage? = nil,
+                topP: Percentage? = nil,
                 numberOfCompletionsToCreate: Int? = nil,
                 stop: [String]? = nil,
-                presence_penalty: Penalty? = nil,
-                frequency_penalty: Penalty? = nil,
+                presencePenalty: Penalty? = nil,
+                frequencyPenalty: Penalty? = nil,
                 user: String? = nil,
                 logger: Logger? = nil) {
         self.connection = connection
         self.model = model
         self.temperature = temperature
-        self.top_p = top_p
+        self.topP = topP
         self.stop = stop
-        self.presence_penalty = presence_penalty
-        self.frequency_penalty = frequency_penalty
+        self.presencePenalty = presencePenalty
+        self.frequencyPenalty = frequencyPenalty
         self.user = user
         self.logger = logger ?? Self.DEFAULT_LOGGER
     }
@@ -77,16 +84,17 @@ extension OpenAIChatThread {
         let requestBody = ChatCompletionRequest(
             model: self.model,
             temperature: self.temperature,
-            top_p: self.top_p,
+            topP: self.topP,
             stop: self.stop,
-            presence_penalty: self.presence_penalty,
-            frequency_penalty: self.frequency_penalty,
+            presencePenalty: self.presencePenalty,
+            frequencyPenalty: self.frequencyPenalty,
             user: self.user,
             messages: self.messages
         )
 
         do {
             let encoder = JSONEncoder()
+            encoder.keyEncodingStrategy = .convertToSnakeCase
             let httpBodyJson = try encoder.encode(requestBody)
             request.httpBody = httpBodyJson
         } catch {
