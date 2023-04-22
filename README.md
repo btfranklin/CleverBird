@@ -13,8 +13,6 @@
 - Asynchronous API calls with Swift's async/await syntax
 - Supports token counting and encoding with the `TokenEncoder` class
 - Allows customization of various parameters, such as temperature and penalties
-- Easily adjustable to support future changes or additional OpenAI API endpoints
-- Installable via Swift Package Manager
 
 ## Usage Instructions
 
@@ -42,7 +40,7 @@ let chatThread = OpenAIChatThread(connection: openAIAPIConnection)
 Generate a completion using the chat thread:
 
 ```swift
-let completionResponse = await chatThread.complete()
+let completion = await chatThread.complete()
 ```
 
 If you need to count tokens or encode/decode text, use the `TokenEncoder` class:
