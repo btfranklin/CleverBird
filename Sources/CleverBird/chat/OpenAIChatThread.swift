@@ -62,6 +62,14 @@ public class OpenAIChatThread {
         messages.append(message)
         return self
     }
+
+    public func getMessages() -> [ChatMessage] {
+        messages
+    }
+
+    public func getNonSystemMessages() -> [ChatMessage] {
+        messages.filter { $0.role != .system }
+    }
 }
 
 extension OpenAIChatThread {
@@ -111,6 +119,7 @@ extension OpenAIChatThread {
             do {
                 let response = try decoder.decode(ChatCompletionResponse.self, from: json)
                 if let choice = response.choices.first {
+                    _ = addMessage(choice.message)
                     return choice.message
                 } else {
                     logger("Error decoding ChatCompletion OpenAI API Response: Unable to parse completion")

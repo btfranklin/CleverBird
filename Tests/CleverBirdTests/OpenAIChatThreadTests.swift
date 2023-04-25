@@ -27,6 +27,7 @@ class OpenAIChatThreadTests: XCTestCase {
     }
 
     func testChatCompletion() async {
+        let responseMessageContent = "The 2020 World Series was won by the Los Angeles Dodgers."
         let mockResponse = """
         {
             "id": "chatcmpl-6p9XYPYSTTRi0xEviKjjilqrWU2Ve",
@@ -42,7 +43,7 @@ class OpenAIChatThreadTests: XCTestCase {
                 {
                     "message": {
                         "role": "assistant",
-                        "content": "The 2020 World Series was won by the Los Angeles Dodgers."
+                        "content": "\(responseMessageContent)"
                     },
                     "finish_reason": "stop",
                     "index": 0
@@ -53,17 +54,25 @@ class OpenAIChatThreadTests: XCTestCase {
 
         let mockURLRequester = MockURLRequester(response: mockResponse)
 
+        let userMessageContent = "Who won the world series in 2020?"
         let openAIAPIConnection = OpenAIAPIConnection(apiKey: "fake_api_key", urlRequester: mockURLRequester)
         let chatThread = OpenAIChatThread(connection: openAIAPIConnection)
             .addSystemMessage("You are a helpful assistant.")
-            .addUserMessage("Who won the world series in 2020?")
+            .addUserMessage(userMessageContent)
 
+        XCTAssertEqual(2, chatThread.getMessages().count)
+        XCTAssertEqual(1, chatThread.getNonSystemMessages().count)
+        XCTAssertEqual(userMessageContent, chatThread.getNonSystemMessages().first?.content)
 
         let completion = await chatThread.complete()
 
         XCTAssertNotNil(completion, "Completion is nil")
         XCTAssertEqual(completion?.content.trimmingCharacters(in: .whitespacesAndNewlines),
-                       "The 2020 World Series was won by the Los Angeles Dodgers.", "Unexpected assistant response")
+                       responseMessageContent, "Unexpected assistant response")
+        XCTAssertEqual(3, chatThread.getMessages().count)
+        XCTAssertEqual(2, chatThread.getNonSystemMessages().count)
+        XCTAssertEqual(userMessageContent, chatThread.getNonSystemMessages().first?.content)
+        XCTAssertEqual(responseMessageContent, chatThread.getNonSystemMessages().last?.content)
     }
 
     func testTokenCount() {
