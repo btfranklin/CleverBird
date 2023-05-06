@@ -14,11 +14,14 @@ let package = Package(
             targets: ["CleverBird"]),
     ],
     dependencies: [
+        .package(url: "https://github.com/kean/Get", from: "2.1.6"),
     ],
     targets: [
         .target(
             name: "CleverBird",
-            dependencies: [],
+            dependencies: [
+                .product(name: "Get", package: "Get")
+            ],
             resources: [
                 .process("tokenization/resources/gpt3-encoder.json"),
                 .process("tokenization/resources/gpt3-vocab.bpe"),
