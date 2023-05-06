@@ -18,8 +18,14 @@ extension ChatThread {
             let request = try await self.connection.createRequest(for: requestBody)
             let response = try await self.connection.client.send(request)
             let completion = response.value
+            let firstChoiceMessage = completion.choices.first?.message
 
-            return completion.choices.first?.message
+            // Append the response message to the thread
+            if let firstChoiceMessage {
+                _ = addMessage(firstChoiceMessage)
+            }
+
+            return firstChoiceMessage
         } catch {
             logger("Error executing request: \(error.localizedDescription)")
             return nil
