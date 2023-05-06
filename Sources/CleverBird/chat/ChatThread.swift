@@ -1,6 +1,8 @@
 import Foundation
 
-public class OpenAIChatThread {
+public typealias Logger = (String) -> Void
+
+public class ChatThread {
 
     private static let DEFAULT_LOGGER: Logger = { message in
         print(message)

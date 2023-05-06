@@ -1,6 +1,6 @@
 //  Created by B.T. Franklin on 5/5/23
 
-extension OpenAIChatThread {
+extension ChatThread {
     public func tokenCount() -> Int {
 
         let tokenEncoder: TokenEncoder

@@ -2,7 +2,7 @@
 
 import Get
 
-extension OpenAIChatThread {
+extension ChatThread {
     public func complete() async -> ChatMessage? {
 
         let requestBody = ChatCompletionRequestBody(
