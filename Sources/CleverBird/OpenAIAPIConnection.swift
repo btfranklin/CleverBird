@@ -47,4 +47,22 @@ public class OpenAIAPIConnection {
             body: body,
             headers: self.requestHeaders)
     }
+
+    func createAsyncByteStream(for body: Encodable) async throws -> URLSession.AsyncBytes {
+
+        let request = try await createRequest(for: body)
+        let urlRequest = try await client.makeURLRequest(for: request)
+        let (asyncByteStream, response) = try await client.session.bytes(for: urlRequest)
+
+        guard let response = response as? HTTPURLResponse else {
+            throw CleverBirdError.responseParsingFailed
+        }
+
+        guard (200...299).contains(response.statusCode) else {
+            throw CleverBirdError.requestFailed(message: "Response status code: \(response.statusCode)")
+        }
+
+        return asyncByteStream
+    }
 }
+

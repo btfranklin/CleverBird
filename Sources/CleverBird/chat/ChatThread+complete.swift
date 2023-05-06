@@ -1,7 +1,5 @@
 //  Created by B.T. Franklin on 5/5/23
 
-import Get
-
 extension ChatThread {
     public func complete() async -> ChatMessage? {
 

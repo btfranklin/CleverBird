@@ -4,6 +4,7 @@ public struct ChatCompletionRequestParameters: Codable {
     public let model: Model
     public let temperature: Percentage
     public let topP: Percentage?
+    public let stream: Bool
     public let stop: [String]?
     public let presencePenalty: Penalty?
     public let frequencyPenalty: Penalty?
@@ -13,6 +14,7 @@ public struct ChatCompletionRequestParameters: Codable {
     public init(model: Model,
                 temperature: Percentage,
                 topP: Percentage? = nil,
+                stream: Bool = false,
                 stop: [String]? = nil,
                 presencePenalty: Penalty? = nil,
                 frequencyPenalty: Penalty? = nil,
@@ -21,6 +23,7 @@ public struct ChatCompletionRequestParameters: Codable {
         self.model = model
         self.temperature = temperature
         self.topP = topP
+        self.stream = stream
         self.stop = stop
         self.presencePenalty = presencePenalty
         self.frequencyPenalty = frequencyPenalty
