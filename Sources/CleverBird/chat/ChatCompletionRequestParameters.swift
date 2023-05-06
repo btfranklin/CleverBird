@@ -1,6 +1,6 @@
 //  Created by B.T. Franklin on 4/15/23
 
-public struct ChatCompletionRequestBody: Codable {
+public struct ChatCompletionRequestParameters: Codable {
     public let model: Model
     public let temperature: Percentage
     public let topP: Percentage?

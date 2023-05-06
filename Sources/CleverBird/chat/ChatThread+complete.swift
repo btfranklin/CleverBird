@@ -5,7 +5,7 @@ import Get
 extension ChatThread {
     public func complete() async -> ChatMessage? {
 
-        let requestBody = ChatCompletionRequestBody(
+        let requestBody = ChatCompletionRequestParameters(
             model: self.model,
             temperature: self.temperature,
             topP: self.topP,
