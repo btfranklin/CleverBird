@@ -7,13 +7,15 @@
 [![GitHub tag](https://img.shields.io/github/tag/btfranklin/CleverBird.svg)](https://github.com/btfranklin/CleverBird)
 [![build](https://github.com/btfranklin/CleverBird/actions/workflows/build.yml/badge.svg)](https://github.com/btfranklin/CleverBird/actions/workflows/build.yml)
 
-`CleverBird` is a Swift Package that provides a convenient way to interact with OpenAI's GPT-4 API and perform various tasks, including token counting and encoding. The package mainly focuses on the `OpenAIClient` and `TokenEncoder` classes.
+CleverBird is a Swift Package that provides a convenient way to interact with OpenAI's GPT-4 API and perform various tasks, including token counting and encoding. The package is designed to deliver a superior Developer Experience (DX) by making the `ChatThread` the center of the interactions. While there are numerous GPT-based Swift packages available, CleverBird stands out due to its focus on simplicity and seamless integration of the handy `TokenEncoder` class.
 
 ## Features
 
 - Asynchronous API calls with Swift's async/await syntax
 - Supports token counting and encoding with the `TokenEncoder` class
 - Allows customization of various parameters, such as temperature and penalties
+- Streamed responses for real-time generated content using the `completeWithStreaming()` method
+- Built-in token counting for usage limit calculations
 
 ## Usage Instructions
 
@@ -29,11 +31,11 @@ Initialize an `OpenAIAPIConnection` with your API key:
 let openAIAPIConnection = OpenAIAPIConnection(apiKey: "your_api_key_here")
 ```
 
-Create an `OpenAIChatThread` instance with the connection, and
+Create a `ChatThread` instance with the connection, and
 add system, user, or assistant messages to the chat thread:
 
 ```swift
-let chatThread = OpenAIChatThread(connection: openAIAPIConnection)
+let chatThread = ChatThread(connection: openAIAPIConnection)
     .addSystemMessage(content: "You are a helpful assistant.")
     .addUserMessage(content: "Who won the world series in 2020?")
 ```
@@ -44,13 +46,38 @@ Generate a completion using the chat thread:
 let completion = await chatThread.complete()
 ```
 
-If you need to count tokens or encode/decode text, use the `TokenEncoder` class:
+The response messages are automatically appended onto the thread, so
+you can continue interacting with it by just adding new user messages
+and requesting additional completions.
+
+Generate a completion with streaming using the chat thread:
+
+```swift
+let completionStream = try await chatThread.completeWithStreaming()
+for try await messageChunk in completionStream {
+    print("Received message chunk: \(messageChunk)")
+}
+```
+
+As with the non-streamed completion, the message will be automatically
+appended onto the thread after it has finished streaming, but the stream
+allows you to see it as it's coming through.
+
+Calculate the token count for messages in the chat thread:
+
+```swift
+let tokenCount = chatThread.tokenCount()
+```
+
+If you need to count tokens or encode/decode text outside of a chat thread,
+use the `TokenEncoder` class:
 
 ```swift
 let tokenEncoder = try TokenEncoder(model: .gpt3)
 let encodedTokens = try tokenEncoder.encode(text: "Hello, world!")
 let decodedText = try tokenEncoder.decode(tokens: encodedTokens)
 ```
+
 
 ## License
 
