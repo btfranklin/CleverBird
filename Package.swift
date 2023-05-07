@@ -14,7 +14,7 @@ let package = Package(
             targets: ["CleverBird"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/kean/Get", from: "2.1.6"),
+        .package(url: "https://github.com/kean/Get", from: "2.1.6")
     ],
     targets: [
         .target(

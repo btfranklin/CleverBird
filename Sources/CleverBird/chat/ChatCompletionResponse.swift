@@ -6,4 +6,3 @@ struct ChatCompletionResponse: Codable {
     }
     let choices: [Choice]
 }
-
