@@ -31,7 +31,6 @@ extension ChatThread {
 
                 do {
                     for try await line in asyncByteStream.lines {
-                        print(line)
                         guard let responseChunk = ChatStreamedResponseChunk.decode(from: line) else {
                             break
                         }
