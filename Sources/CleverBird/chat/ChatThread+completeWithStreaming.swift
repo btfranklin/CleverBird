@@ -18,7 +18,7 @@ extension ChatThread {
         )
 
         // Define the callback closure that appends the message to the chat thread
-        let onResponseStreamCompleted: (ChatMessage) -> Void = { message in
+        let addStreamedMessageToThread: (ChatMessage) -> Void = { message in
             _ = self.addMessage(message)
         }
 
@@ -61,7 +61,7 @@ extension ChatThread {
                 }
 
                 if let responseMessageRole, let responseMessageContent {
-                    onResponseStreamCompleted(ChatMessage(role: responseMessageRole, content: responseMessageContent))
+                    addStreamedMessageToThread(ChatMessage(role: responseMessageRole, content: responseMessageContent))
                 }
                 continuation.finish()
             }
