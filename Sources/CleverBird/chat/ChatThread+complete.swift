@@ -1,7 +1,7 @@
 //  Created by B.T. Franklin on 5/5/23
 
 extension ChatThread {
-    public func complete() async -> ChatMessage? {
+    public func complete() async throws -> ChatMessage {
 
         let requestBody = ChatCompletionRequestParameters(
             model: self.model,
@@ -18,17 +18,16 @@ extension ChatThread {
             let request = try await self.connection.createRequest(for: requestBody)
             let response = try await self.connection.client.send(request)
             let completion = response.value
-            let firstChoiceMessage = completion.choices.first?.message
+            guard let firstChoiceMessage = completion.choices.first?.message else {
+                throw CleverBirdError.responseParsingFailed(message: "No message choice was available in completion response.")
+            }
 
             // Append the response message to the thread
-            if let firstChoiceMessage {
-                _ = addMessage(firstChoiceMessage)
-            }
+            _ = addMessage(firstChoiceMessage)
 
             return firstChoiceMessage
         } catch {
-            logger("Error executing request: \(error.localizedDescription)")
-            return nil
+            throw CleverBirdError.requestFailed(message: error.localizedDescription)
         }
     }
 }

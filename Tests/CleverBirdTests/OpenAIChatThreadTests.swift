@@ -17,14 +17,13 @@ class OpenAIChatThreadTests: XCTestCase {
         XCTAssertEqual(userMessageContent, chatThread.getNonSystemMessages().first?.content)
     }
 
-    func testTokenCount() {
+    func testTokenCount() throws {
         let openAIAPIConnection = OpenAIAPIConnection(apiKey: "fake_api_key")
         let chatThread = ChatThread(connection: openAIAPIConnection)
             .addSystemMessage("You are a helpful assistant.")
             .addUserMessage("Who won the world series in 2020?")
-
-        let tokenCount = chatThread.tokenCount()
-
+        let tokenCount = try chatThread.tokenCount()
+        
         XCTAssertEqual(tokenCount, 25, "Unexpected token count")
     }
 

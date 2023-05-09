@@ -1,12 +1,6 @@
 import Foundation
 
-public typealias Logger = (String) -> Void
-
 public class ChatThread {
-
-    private static let DEFAULT_LOGGER: Logger = { message in
-        print(message)
-    }
 
     let connection: OpenAIAPIConnection
     let model: Model
@@ -16,7 +10,6 @@ public class ChatThread {
     let presencePenalty: Penalty?
     let frequencyPenalty: Penalty?
     let user: String?
-    let logger: Logger
 
     var messages: [ChatMessage] = []
 
@@ -28,8 +21,7 @@ public class ChatThread {
                 stop: [String]? = nil,
                 presencePenalty: Penalty? = nil,
                 frequencyPenalty: Penalty? = nil,
-                user: String? = nil,
-                logger: Logger? = nil) {
+                user: String? = nil) {
         self.connection = connection
         self.model = model
         self.temperature = temperature
@@ -38,7 +30,6 @@ public class ChatThread {
         self.presencePenalty = presencePenalty
         self.frequencyPenalty = frequencyPenalty
         self.user = user
-        self.logger = logger ?? Self.DEFAULT_LOGGER
     }
 
     public func addSystemMessage(_ content: String) -> Self {

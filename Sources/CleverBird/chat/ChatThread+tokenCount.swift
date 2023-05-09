@@ -1,14 +1,13 @@
 //  Created by B.T. Franklin on 5/5/23
 
 extension ChatThread {
-    public func tokenCount() -> Int {
+    public func tokenCount() throws -> Int {
 
         let tokenEncoder: TokenEncoder
         do {
             tokenEncoder = try TokenEncoder()
         } catch {
-            logger("Unable to create token encoder: \(error)")
-            return -1
+            throw CleverBirdError.tokenEncoderCreationFailed(message: error.localizedDescription)
         }
 
         var tokensPerMessage: Int
@@ -28,11 +27,11 @@ extension ChatThread {
 
                 numTokens += roleTokens + contentTokens + tokensPerMessage
             } catch {
-                logger("Error encoding text: \(error)")
+                throw CleverBirdError.tokenEncodingError(message: error.localizedDescription)
             }
         }
 
-        numTokens += 3  // every reply is primed with assistant
+        numTokens += 3  // every reply is primed with "assistant"
 
         return numTokens
     }

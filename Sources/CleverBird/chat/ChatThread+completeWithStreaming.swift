@@ -56,7 +56,7 @@ extension ChatThread {
                         continuation.yield(deltaContent)
                     }
                 } catch {
-                    throw CleverBirdError.responseParsingFailed
+                    throw CleverBirdError.responseParsingFailed(message: error.localizedDescription)
                 }
 
                 if let responseMessageRole, let responseMessageContent {

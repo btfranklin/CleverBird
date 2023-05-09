@@ -55,7 +55,7 @@ public class OpenAIAPIConnection {
         let (asyncByteStream, response) = try await client.session.bytes(for: urlRequest)
 
         guard let response = response as? HTTPURLResponse else {
-            throw CleverBirdError.responseParsingFailed
+            throw CleverBirdError.responseParsingFailed(message: "Expected response of type HTTPURLResponse, but got type \(response.self.className)")
         }
 
         guard (200...299).contains(response.statusCode) else {
