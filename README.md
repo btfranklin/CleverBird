@@ -45,7 +45,7 @@ let chatThread = ChatThread(connection: openAIAPIConnection)
 Generate a completion using the chat thread:
 
 ```swift
-let completion = await chatThread.complete()
+let completion = try await chatThread.complete()
 ```
 
 The response messages are automatically appended onto the thread, so
@@ -68,7 +68,7 @@ allows you to see it as it's coming through.
 Calculate the token count for messages in the chat thread:
 
 ```swift
-let tokenCount = chatThread.tokenCount()
+let tokenCount = try chatThread.tokenCount()
 ```
 
 If you need to count tokens or encode/decode text outside of a chat thread,
