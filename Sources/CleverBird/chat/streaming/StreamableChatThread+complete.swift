@@ -40,6 +40,9 @@ extension StreamableChatThread {
                     DispatchQueue.main.async {
                         strongSelf.streamingTask = nil
                     }
+                    if let responseMessageRole, let responseMessageContent {
+                        addStreamedMessageToThread(ChatMessage(role: responseMessageRole, content: responseMessageContent))
+                    }
                 }
 
                 do {
@@ -79,10 +82,6 @@ extension StreamableChatThread {
                         // Finished due to error
                         continuation.finish(throwing: CleverBirdError.responseParsingFailed(message: error.localizedDescription))
                     }
-                }
-
-                if let responseMessageRole, let responseMessageContent {
-                    addStreamedMessageToThread(ChatMessage(role: responseMessageRole, content: responseMessageContent))
                 }
             }
         }
