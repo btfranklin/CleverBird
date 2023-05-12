@@ -1,4 +1,4 @@
-import Foundation
+//  Created by B.T. Franklin on 5/5/23
 
 public class ChatThread {
 

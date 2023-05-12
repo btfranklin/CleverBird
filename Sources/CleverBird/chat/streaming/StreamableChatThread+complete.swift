@@ -2,19 +2,20 @@
 
 import Foundation
 
-extension ChatThread {
-    public func completeWithStreaming() async throws -> AsyncThrowingStream<String, Swift.Error> {
+extension StreamableChatThread {
+
+    public func complete() async throws -> AsyncThrowingStream<String, Swift.Error> {
 
         let requestBody = ChatCompletionRequestParameters(
-            model: self.model,
-            temperature: self.temperature,
-            topP: self.topP,
+            model: self.chatThread.model,
+            temperature: self.chatThread.temperature,
+            topP: self.chatThread.topP,
             stream: true,
-            stop: self.stop,
-            presencePenalty: self.presencePenalty,
-            frequencyPenalty: self.frequencyPenalty,
-            user: self.user,
-            messages: self.messages
+            stop: self.chatThread.stop,
+            presencePenalty: self.chatThread.presencePenalty,
+            frequencyPenalty: self.chatThread.frequencyPenalty,
+            user: self.chatThread.user,
+            messages: self.chatThread.messages
         )
 
         // Define the callback closure that appends the message to the chat thread
@@ -22,12 +23,24 @@ extension ChatThread {
             _ = self.addMessage(message)
         }
 
-        let asyncByteStream = try await self.connection.createAsyncByteStream(for: requestBody)
-        return AsyncThrowingStream { continuation in
-            Task {
+        let asyncByteStream = try await self.chatThread.connection.createAsyncByteStream(for: requestBody)
+        
+        return AsyncThrowingStream { [weak self] continuation in
+            guard let strongSelf = self else {
+                // Finished due to deallocated thread
+                continuation.finish()
+                return
+            }
+            strongSelf.streamingTask = Task {
 
                 var responseMessageRole: ChatMessage.Role?
                 var responseMessageContent: String?
+
+                defer {
+                    DispatchQueue.main.async {
+                        strongSelf.streamingTask = nil
+                    }
+                }
 
                 do {
                     for try await line in asyncByteStream.lines {
@@ -55,16 +68,28 @@ extension ChatThread {
                         }
                         continuation.yield(deltaContent)
                     }
+                    // Finished normally
+                    continuation.finish()
+
                 } catch {
-                    throw CleverBirdError.responseParsingFailed(message: error.localizedDescription)
+                    if Task.isCancelled {
+                        // Finished due to cancellation
+                        continuation.finish()
+                    } else {
+                        // Finished due to error
+                        continuation.finish(throwing: CleverBirdError.responseParsingFailed(message: error.localizedDescription))
+                    }
                 }
 
                 if let responseMessageRole, let responseMessageContent {
                     addStreamedMessageToThread(ChatMessage(role: responseMessageRole, content: responseMessageContent))
                 }
-                continuation.finish()
             }
         }
     }
 
+    public func cancelStreaming() {
+        self.streamingTask?.cancel()
+        self.streamingTask = nil
+    }
 }
