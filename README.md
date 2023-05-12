@@ -16,7 +16,7 @@
 - Asynchronous API calls with Swift's async/await syntax
 - Supports token counting and encoding with the `TokenEncoder` class
 - Allows customization of various parameters, such as temperature and penalties
-- Streamed responses for real-time generated content using the `completeWithStreaming()` method
+- Streamed responses for real-time generated content
 - Built-in token counting for usage limit calculations
 
 ## Usage Instructions
@@ -52,16 +52,17 @@ The response messages are automatically appended onto the thread, so
 you can continue interacting with it by just adding new user messages
 and requesting additional completions.
 
-Generate a completion with streaming using the chat thread:
+Generate a completion with streaming using the streaming version of a chat thread:
 
 ```swift
-let completionStream = try await chatThread.completeWithStreaming()
+let chatThread = ChatThread(connection: openAIAPIConnection).withStreaming()
+let completionStream = try await chatThread.complete()
 for try await messageChunk in completionStream {
     print("Received message chunk: \(messageChunk)")
 }
 ```
 
-As with the non-streamed completion, the message will be automatically
+Just like with the non-streamed completion, the message will be automatically
 appended onto the thread after it has finished streaming, but the stream
 allows you to see it as it's coming through.
 
