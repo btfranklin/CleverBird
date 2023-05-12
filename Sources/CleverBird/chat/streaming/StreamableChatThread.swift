@@ -25,6 +25,7 @@ public class StreamableChatThread {
     }
 
     public func addMessage(_ message: ChatMessage) -> Self {
+        _ = self.chatThread.addMessage(message)
         return self
     }
 
