@@ -25,8 +25,12 @@ public class OpenAIAPIConnection {
         let encoder = JSONEncoder()
         encoder.keyEncodingStrategy = .convertToSnakeCase
 
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+
         var clientConfiguration = APIClient.Configuration(baseURL: openAIChatCompletionURL)
         clientConfiguration.encoder = encoder
+        clientConfiguration.decoder = decoder
 
         self.client = APIClient(configuration: clientConfiguration)
 
