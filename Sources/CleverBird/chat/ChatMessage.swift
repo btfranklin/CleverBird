@@ -2,7 +2,7 @@
 
 import Foundation
 
-public struct ChatMessage: Codable {
+public struct ChatMessage: Codable, Identifiable {
 
     public enum Role: String, Codable {
         case system

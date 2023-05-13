@@ -1,6 +1,6 @@
 //  Created by B.T. Franklin on 5/5/23
 
-public struct ChatCompletionResponse: Codable {
+struct ChatCompletionResponse: Codable, Identifiable {
     struct Choice: Codable {
         let message: ChatMessage
     }
@@ -12,7 +12,7 @@ public struct ChatCompletionResponse: Codable {
         case id
     }
 
-    public init(from decoder: Decoder) throws {
+    init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         id = try container.decode(String.self, forKey: .id)
         var choicesContainer = try container.nestedUnkeyedContainer(forKey: .choices)

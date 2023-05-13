@@ -2,7 +2,7 @@
 
 import Foundation
 
-struct ChatStreamedResponseChunk: Codable {
+struct ChatStreamedResponseChunk: Codable, Identifiable {
     struct Choice: Codable {
         struct Delta: Codable {
             let role: ChatMessage.Role?
