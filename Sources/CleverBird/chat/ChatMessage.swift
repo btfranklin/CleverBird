@@ -51,3 +51,11 @@ public struct ChatMessage: Codable, Identifiable {
         try container.encode(content, forKey: .content)
     }
 }
+
+extension ChatMessage: Equatable {
+    public static func == (lhs: ChatMessage, rhs: ChatMessage) -> Bool {
+        return lhs.id == rhs.id
+            && lhs.role == rhs.role
+            && lhs.content == rhs.content
+    }
+}
