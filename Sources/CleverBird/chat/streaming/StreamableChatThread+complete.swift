@@ -33,6 +33,7 @@ extension StreamableChatThread {
             }
             strongSelf.streamingTask = Task {
 
+                var responseMessageId: String?
                 var responseMessageRole: ChatMessage.Role?
                 var responseMessageContent: String?
 
@@ -41,7 +42,11 @@ extension StreamableChatThread {
                         strongSelf.streamingTask = nil
                     }
                     if let responseMessageRole, let responseMessageContent {
-                        addStreamedMessageToThread(ChatMessage(role: responseMessageRole, content: responseMessageContent))
+                        var streamedMessage = ChatMessage(role: responseMessageRole,
+                                                          content: responseMessageContent,
+                                                          id: responseMessageId)
+                        streamedMessage.id = responseMessageId ?? "unspecified"
+                        addStreamedMessageToThread(streamedMessage)
                     }
                 }
 
@@ -50,6 +55,8 @@ extension StreamableChatThread {
                         guard let responseChunk = ChatStreamedResponseChunk.decode(from: line) else {
                             break
                         }
+
+                        responseMessageId = responseChunk.id
 
                         if let deltaRole = responseChunk.choices.first?.delta.role {
                             responseMessageRole = deltaRole

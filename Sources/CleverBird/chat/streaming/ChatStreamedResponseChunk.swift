@@ -18,6 +18,7 @@ struct ChatStreamedResponseChunk: Codable {
         let finishReason: FinishReason?
     }
     let choices: [Choice]
+    let id: String
 }
 
 extension ChatStreamedResponseChunk {
@@ -27,9 +28,9 @@ extension ChatStreamedResponseChunk {
         return decoder
     }()
 
-    static func decode(from string: String) -> ChatStreamedResponseChunk? {
-        guard string.hasPrefix("data: "),
-              let data = string.dropFirst(6).data(using: .utf8) else {
+    static func decode(from chunkString: String) -> ChatStreamedResponseChunk? {
+        guard chunkString.hasPrefix("data: "),
+              let data = chunkString.dropFirst(6).data(using: .utf8) else {
             return nil
         }
         return try? CHUNK_DECODER.decode(ChatStreamedResponseChunk.self, from: data)
