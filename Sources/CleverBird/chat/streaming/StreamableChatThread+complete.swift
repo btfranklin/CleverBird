@@ -4,16 +4,23 @@ import Foundation
 
 extension StreamableChatThread {
 
-    public func complete() async throws -> AsyncThrowingStream<String, Swift.Error> {
+    public func complete(model: Model? = nil,
+                         temperature: Percentage? = nil,
+                         topP: Percentage? = nil,
+                         stop: [String]? = nil,
+                         maxTokens: Int? = nil,
+                         presencePenalty: Penalty? = nil,
+                         frequencyPenalty: Penalty? = nil) async throws -> AsyncThrowingStream<String, Swift.Error> {
 
         let requestBody = ChatCompletionRequestParameters(
-            model: self.chatThread.model,
-            temperature: self.chatThread.temperature,
-            topP: self.chatThread.topP,
+            model: model ?? self.chatThread.model,
+            temperature: temperature ?? self.chatThread.temperature,
+            topP: topP ?? self.chatThread.topP,
             stream: true,
-            stop: self.chatThread.stop,
-            presencePenalty: self.chatThread.presencePenalty,
-            frequencyPenalty: self.chatThread.frequencyPenalty,
+            stop: stop ?? self.chatThread.stop,
+            maxTokens: maxTokens ?? self.chatThread.maxTokens,
+            presencePenalty: presencePenalty ?? self.chatThread.presencePenalty,
+            frequencyPenalty: frequencyPenalty ?? self.chatThread.frequencyPenalty,
             user: self.chatThread.user,
             messages: self.chatThread.messages
         )

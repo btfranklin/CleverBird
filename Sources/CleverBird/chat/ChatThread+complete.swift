@@ -1,15 +1,22 @@
 //  Created by B.T. Franklin on 5/5/23
 
 extension ChatThread {
-    public func complete() async throws -> ChatMessage {
+    public func complete(model: Model? = nil,
+                         temperature: Percentage? = nil,
+                         topP: Percentage? = nil,
+                         stop: [String]? = nil,
+                         maxTokens: Int? = nil,
+                         presencePenalty: Penalty? = nil,
+                         frequencyPenalty: Penalty? = nil) async throws -> ChatMessage {
 
         let requestBody = ChatCompletionRequestParameters(
-            model: self.model,
-            temperature: self.temperature,
-            topP: self.topP,
-            stop: self.stop,
-            presencePenalty: self.presencePenalty,
-            frequencyPenalty: self.frequencyPenalty,
+            model: model ?? self.model,
+            temperature: temperature ?? self.temperature,
+            topP: topP ?? self.topP,
+            stop: stop ?? self.stop,
+            maxTokens: maxTokens ?? self.maxTokens,
+            presencePenalty: presencePenalty ?? self.presencePenalty,
+            frequencyPenalty: frequencyPenalty ?? self.frequencyPenalty,
             user: self.user,
             messages: self.messages
         )

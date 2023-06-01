@@ -7,6 +7,7 @@ public class ChatThread {
     let temperature: Percentage
     let topP: Percentage?
     let stop: [String]?
+    let maxTokens: Int?
     let presencePenalty: Penalty?
     let frequencyPenalty: Penalty?
     let user: String?
@@ -19,6 +20,7 @@ public class ChatThread {
                 topP: Percentage? = nil,
                 numberOfCompletionsToCreate: Int? = nil,
                 stop: [String]? = nil,
+                maxTokens: Int? = nil,
                 presencePenalty: Penalty? = nil,
                 frequencyPenalty: Penalty? = nil,
                 user: String? = nil) {
@@ -27,6 +29,7 @@ public class ChatThread {
         self.temperature = temperature
         self.topP = topP
         self.stop = stop
+        self.maxTokens = maxTokens
         self.presencePenalty = presencePenalty
         self.frequencyPenalty = frequencyPenalty
         self.user = user
