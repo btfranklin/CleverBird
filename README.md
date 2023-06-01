@@ -62,7 +62,7 @@ In the example above, we initialized a `ChatThread` with a specific model, tempe
 - `numberOfCompletionsToCreate`: The number of completions to create.
 - `stop`: An array of strings. The model will stop generating when it encounters any of these strings.
 - `maxTokens`: The maximum number of tokens to generate.
-- `presencePenalty`: A penalty for using new tokens.
+- `presencePenalty`: A penalty for using tokens that have already been used.
 - `frequencyPenalty`: A penalty for using frequent tokens.
 - `user`: The user ID associated with the chat.
 
@@ -93,7 +93,7 @@ In this example, we override the model, temperature, and maximum number of token
 - `topP`: This is the nucleus sampling parameter. It specifies the probability mass to cover with the prediction.
 - `stop`: An array of strings. The model will stop generating when it encounters any of these strings.
 - `maxTokens`: The maximum number of tokens to generate.
-- `presencePenalty`: A penalty for using new tokens.
+- `presencePenalty`: A penalty for using tokens that have already been used.
 - `frequencyPenalty`: A penalty for using frequent tokens.
 
 All parameters are optional and default to the values set during `ChatThread` initialization if not specified.
