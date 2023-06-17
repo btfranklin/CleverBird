@@ -1,5 +1,7 @@
 //  Created by B.T. Franklin on 6/15/23
 
+import Foundation
+
 public enum JSONValue: Codable {
     case null
     case string(String)
@@ -8,6 +10,25 @@ public enum JSONValue: Codable {
     case integer(Int)
     case object([String: JSONValue])
     case array([JSONValue])
+
+    var typeDescription: String {
+        switch self {
+        case .null:
+            return "null"
+        case .string(_):
+            return "string"
+        case .boolean(_):
+            return "boolean"
+        case .number(_):
+            return "number"
+        case .integer(_):
+            return "integer"
+        case .object(_):
+            return "object"
+        case .array(_):
+            return "array"
+        }
+    }
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
@@ -49,4 +70,51 @@ public enum JSONValue: Codable {
             try container.encodeNil()
         }
     }
+
+    func conformsTo(type: JSONType?) -> Bool {
+        switch (self, type) {
+        case (.string(_), .string),
+            (.number(_), .number),
+            (.integer(_), .integer),
+            (.object(_), .object),
+            (.array(_), .array),
+            (.boolean(_), .boolean),
+            (.null, .null):
+            return true
+        default:
+            return false
+        }
+    }
+
+    static func processJSONValue(_ value: Any) throws -> JSONValue {
+        switch value {
+        case let stringValue as String:
+            return .string(stringValue)
+        case let numberValue as Double:
+            if numberValue.truncatingRemainder(dividingBy: 1) == 0 {
+                // The number is actually an integer
+                return .integer(Int(numberValue))
+            } else {
+                // The number is a true double
+                return .number(numberValue)
+            }
+        case let intValue as Int:
+            return .integer(intValue)
+        case let boolValue as Bool:
+            return .boolean(boolValue)
+        case is NSNull:
+            return .null
+        case let arrayValue as [Any]:
+            return .array(try arrayValue.map(processJSONValue))
+        case let objectValue as [String: Any]:
+            var result: [String: JSONValue] = [:]
+            for (key, value) in objectValue {
+                result[key] = try processJSONValue(value)
+            }
+            return .object(result)
+        default:
+            throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: [], debugDescription: "Invalid JSON value"))
+        }
+    }
+
 }
