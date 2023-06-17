@@ -22,15 +22,9 @@ public class OpenAIAPIConnection {
         urlComponents.host = "api.openai.com"
         let openAIChatCompletionURL = urlComponents.url
 
-        let encoder = JSONEncoder()
-        encoder.keyEncodingStrategy = .convertToSnakeCase
-
-        let decoder = JSONDecoder()
-        decoder.keyDecodingStrategy = .convertFromSnakeCase
-
-        var clientConfiguration = APIClient.Configuration(baseURL: openAIChatCompletionURL)
-        clientConfiguration.encoder = encoder
-        clientConfiguration.decoder = decoder
+        let clientConfiguration = APIClient.Configuration(baseURL: openAIChatCompletionURL)
+        clientConfiguration.encoder.keyEncodingStrategy = .convertToSnakeCase
+        clientConfiguration.decoder.keyDecodingStrategy = .convertFromSnakeCase
 
         self.client = APIClient(configuration: clientConfiguration)
 
@@ -69,4 +63,3 @@ public class OpenAIAPIConnection {
         return asyncByteStream
     }
 }
-
