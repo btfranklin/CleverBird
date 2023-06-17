@@ -7,7 +7,9 @@ extension ChatThread {
                          stop: [String]? = nil,
                          maxTokens: Int? = nil,
                          presencePenalty: Penalty? = nil,
-                         frequencyPenalty: Penalty? = nil) async throws -> ChatMessage {
+                         frequencyPenalty: Penalty? = nil,
+                         functions: [Function]? = nil,
+                         functionCallMode: FunctionCallMode? = nil) async throws -> ChatMessage {
 
         let requestBody = ChatCompletionRequestParameters(
             model: model ?? self.model,
@@ -18,10 +20,22 @@ extension ChatThread {
             presencePenalty: presencePenalty ?? self.presencePenalty,
             frequencyPenalty: frequencyPenalty ?? self.frequencyPenalty,
             user: self.user,
-            messages: self.messages
+            messages: self.messages,
+            functions: functions ?? self.functions,
+            functionCallMode: functionCallMode
         )
 
         do {
+            // Set the functions in the FunctionRegistry before the request
+            if let functions = requestBody.functions {
+                FunctionRegistry.shared.setFunctions(functions)
+            }
+
+            // ...and be sure to clear them at the end.
+            defer {
+                FunctionRegistry.shared.clearFunctions()
+            }
+
             let request = try await self.connection.createRequest(for: requestBody)
             let response = try await self.connection.client.send(request)
             let completion = response.value
@@ -30,9 +44,10 @@ extension ChatThread {
             }
 
             // Append the response message to the thread
-            _ = addMessage(firstChoiceMessage)
+            addMessage(firstChoiceMessage)
 
             return firstChoiceMessage
+
         } catch {
             throw CleverBirdError.requestFailed(message: error.localizedDescription)
         }

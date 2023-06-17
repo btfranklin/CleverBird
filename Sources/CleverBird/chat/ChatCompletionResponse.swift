@@ -1,8 +1,15 @@
 //  Created by B.T. Franklin on 5/5/23
 
 struct ChatCompletionResponse: Codable, Identifiable {
+
     struct Choice: Codable {
         let message: ChatMessage
+        let functionCall: FunctionCall?
+
+        enum CodingKeys: String, CodingKey {
+            case message
+            case functionCall
+        }
     }
     let choices: [Choice]
     let id: String
@@ -16,13 +23,16 @@ struct ChatCompletionResponse: Codable, Identifiable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         id = try container.decode(String.self, forKey: .id)
         var choicesContainer = try container.nestedUnkeyedContainer(forKey: .choices)
-        var choices = [Choice]()
+        var choices: [Choice] = []
         while !choicesContainer.isAtEnd {
-            let choice = try choicesContainer.decode(Choice.self)
-            var message = choice.message
+            let choiceContainer = try choicesContainer.nestedContainer(keyedBy: Choice.CodingKeys.self)
+            var message = try choiceContainer.decode(ChatMessage.self, forKey: .message)
+            let functionCall = try choiceContainer.decodeIfPresent(FunctionCall.self, forKey: .functionCall)
             message.id = id
-            choices.append(Choice(message: message))
+            let choice = Choice(message: message, functionCall: functionCall)
+            choices.append(choice)
         }
         self.choices = choices
     }
+
 }

@@ -13,6 +13,7 @@ public class ChatThread {
     let user: String?
 
     var messages: [ChatMessage] = []
+    var functions: [Function]?
 
     public init(connection: OpenAIAPIConnection,
                 model: Model = .gpt4,
@@ -23,7 +24,8 @@ public class ChatThread {
                 maxTokens: Int? = nil,
                 presencePenalty: Penalty? = nil,
                 frequencyPenalty: Penalty? = nil,
-                user: String? = nil) {
+                user: String? = nil,
+                functions: [Function]? = nil) {
         self.connection = connection
         self.model = model
         self.temperature = temperature
@@ -33,20 +35,40 @@ public class ChatThread {
         self.presencePenalty = presencePenalty
         self.frequencyPenalty = frequencyPenalty
         self.user = user
+        self.functions = functions
     }
 
+    @discardableResult
     public func addSystemMessage(_ content: String) -> Self {
-        addMessage(ChatMessage(role: .system, content: content))
+        do {
+            try addMessage(ChatMessage(role: .system, content: content))
+        } catch {
+            print(error.localizedDescription)
+        }
+        return self
     }
 
+    @discardableResult
     public func addUserMessage(_ content: String) -> Self {
-        addMessage(ChatMessage(role: .user, content: content))
+        do {
+            try addMessage(ChatMessage(role: .user, content: content))
+        } catch {
+            print(error.localizedDescription)
+        }
+        return self
     }
 
+    @discardableResult
     public func addAssistantMessage(_ content: String) -> Self {
-        addMessage(ChatMessage(role: .assistant, content: content))
+        do {
+            try addMessage(ChatMessage(role: .assistant, content: content))
+        } catch {
+            print(error.localizedDescription)
+        }
+        return self
     }
 
+    @discardableResult
     public func addMessage(_ message: ChatMessage) -> Self {
         messages.append(message)
         return self
@@ -58,5 +80,28 @@ public class ChatThread {
 
     public func getNonSystemMessages() -> [ChatMessage] {
         messages.filter { $0.role != .system }
+    }
+
+    @discardableResult
+    public func setFunctions(_ functions: [Function]?) -> Self {
+        self.functions = functions
+        return self
+    }
+
+    public func getFunctions() -> [Function]? {
+        functions
+    }
+
+    @discardableResult
+    func addFunctionResponse(_ content: String, for functionCall: FunctionCall) -> ChatThread {
+        do {
+            let responseMessage = try ChatMessage(role: .function,
+                                                  content: content,
+                                                  functionCall: functionCall)
+            messages.append(responseMessage)
+        } catch {
+            print(error.localizedDescription)
+        }
+        return self
     }
 }
