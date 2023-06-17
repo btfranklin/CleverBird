@@ -9,23 +9,27 @@ public class StreamableChatThread {
         self.chatThread = chatThread
     }
 
+    @discardableResult
     public func addSystemMessage(_ content: String) -> Self {
-        _ = self.chatThread.addSystemMessage(content)
+        self.chatThread.addSystemMessage(content)
         return self
     }
 
+    @discardableResult
     public func addUserMessage(_ content: String) -> Self {
-        _ = self.chatThread.addUserMessage(content)
+        self.chatThread.addUserMessage(content)
         return self
     }
 
+    @discardableResult
     public func addAssistantMessage(_ content: String) -> Self {
-        _ = self.chatThread.addAssistantMessage(content)
+        self.chatThread.addAssistantMessage(content)
         return self
     }
 
+    @discardableResult
     public func addMessage(_ message: ChatMessage) -> Self {
-        _ = self.chatThread.addMessage(message)
+        self.chatThread.addMessage(message)
         return self
     }
 
