@@ -27,7 +27,7 @@ extension StreamableChatThread {
 
         // Define the callback closure that appends the message to the chat thread
         let addStreamedMessageToThread: (ChatMessage) -> Void = { message in
-            _ = self.addMessage(message)
+            self.addMessage(message)
         }
 
         let asyncByteStream = try await self.chatThread.connection.createAsyncByteStream(for: requestBody)
@@ -49,11 +49,15 @@ extension StreamableChatThread {
                         strongSelf.streamingTask = nil
                     }
                     if let responseMessageRole, let responseMessageContent {
-                        var streamedMessage = ChatMessage(role: responseMessageRole,
-                                                          content: responseMessageContent,
-                                                          id: responseMessageId)
-                        streamedMessage.id = responseMessageId ?? "unspecified"
-                        addStreamedMessageToThread(streamedMessage)
+                        do {
+                            var streamedMessage = try ChatMessage(role: responseMessageRole,
+                                                                  content: responseMessageContent,
+                                                                  id: responseMessageId)
+                            streamedMessage.id = responseMessageId ?? "unspecified"
+                            addStreamedMessageToThread(streamedMessage)
+                        } catch {
+                            print("error while creating streamed message: \(error.localizedDescription)")
+                        }
                     }
                 }
 
