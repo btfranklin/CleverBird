@@ -19,6 +19,8 @@ extension ChatThread {
             tokensPerMessage = 4
         case .gpt4:
             tokensPerMessage = 3
+        case .specific(_):
+            tokensPerMessage = 3
         }
 
         var numTokens = 0

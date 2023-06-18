@@ -1,6 +1,7 @@
-public enum Model: String, Codable {
-    case gpt35Turbo = "gpt-3.5-turbo"
-    case gpt4 = "gpt-4"
+public enum Model: Codable {
+    case gpt35Turbo
+    case gpt4
+    case specific(String)
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
@@ -12,7 +13,24 @@ public enum Model: String, Codable {
         case _ where modelString.starts(with: "gpt-4"):
             self = .gpt4
         default:
-            throw DecodingError.dataCorruptedError(in: container, debugDescription: "Cannot initialize Model from invalid String value: \(modelString)")
+            self = .specific(modelString)
         }
     }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        let modelString: String
+
+        switch self {
+        case .gpt35Turbo:
+            modelString = "gpt-3.5-turbo"
+        case .gpt4:
+            modelString = "gpt-4"
+        case .specific(let specificString):
+            modelString = specificString
+        }
+
+        try container.encode(modelString)
+    }
+
 }
