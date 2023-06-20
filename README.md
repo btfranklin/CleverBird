@@ -127,6 +127,40 @@ let encodedTokens = try tokenEncoder.encode(text: "Hello, world!")
 let decodedText = try tokenEncoder.decode(tokens: encodedTokens)
 ```
 
+## Using Functions
+
+`CleverBird` supports Function Calls. This powerful feature allows developers to define their own custom commands, making it easier to control the behavior of the AI. Function Calls can be included in the `ChatThread` and used in the `complete()` method.
+
+First, define your function parameters and the function itself. The `Function.Parameters` class is used to set the properties and required parameters of your function.
+
+```swift
+let getCurrentWeatherParameters = Function.Parameters(
+    properties: [
+        "location": Function.Parameters.Property(type: .string,
+                                                 description: "The city and state, e.g. San Francisco, CA"),
+        "format": Function.Parameters.Property(type: .string,
+                                               description: "The temperature unit to use. Infer this from the user's location.",
+                                               enumCases: ["celsius", "fahrenheit"])
+    ],
+    required: ["location", "format"])
+
+let getCurrentWeather = Function(name: "get_current_weather",
+                                 description: "Get the current weather",
+                                 parameters: getCurrentWeatherParameters)
+```
+
+Then, initialize your `ChatThread` with your API connection and an array of functions:
+
+```swift
+let openAIAPIConnection = OpenAIAPIConnection(apiKey: "your_api_key_here")
+let chatThread = ChatThread(connection: openAIAPIConnection,
+                            functions: [getCurrentWeather])
+    .addSystemMessage(content: "You are a helpful assistant.")
+```
+
+Finally, call the `complete()` function to generate a response. If the assistant needs to perform a function during the conversation, it will use the function definitions you provided.
+
+Please note that functions are only supported in non-streaming completions at this time.
 
 ## License
 
