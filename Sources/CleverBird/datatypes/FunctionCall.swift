@@ -44,7 +44,7 @@ public struct FunctionCall: Codable {
                 let value = try JSONValue.processJSONValue(argValue)
 
                 // Perform type checking against expectedType
-                let expectedType = function?.parameters?.properties[argName]?.type
+                let expectedType = function?.parameters.properties[argName]?.type
                 if !value.conformsTo(type: expectedType) {
                     throw DecodingError.dataCorruptedError(forKey: .arguments,
                                                            in: container,

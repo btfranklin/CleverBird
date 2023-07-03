@@ -3,6 +3,11 @@
 /// A function that the AI can call
 public struct Function: Codable {
 
+    static public let EMPTY_PARAMETERS = Function.Parameters(
+        properties: [:],
+        required: []
+    )
+
     /// The name of the function. This should match with the name used in the chat message when the function is being called.
     public let name: String
 
@@ -10,9 +15,9 @@ public struct Function: Codable {
     public let description: String?
 
     /// The parameters of the function
-    public let parameters: Parameters?
+    public let parameters: Parameters
 
-    public init(name: String, description: String? = nil, parameters: Parameters? = nil) {
+    public init(name: String, description: String? = nil, parameters: Parameters = EMPTY_PARAMETERS) {
         self.name = name
         self.description = description
         self.parameters = parameters
