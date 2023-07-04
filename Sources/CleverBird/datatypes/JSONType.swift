@@ -6,6 +6,5 @@ public enum JSONType: String, Codable {
     case boolean
     case number
     case integer
-    case object
     case array
 }

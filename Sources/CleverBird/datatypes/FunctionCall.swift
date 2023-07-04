@@ -41,15 +41,12 @@ public struct FunctionCall: Codable {
 
             // Decode each argument
             for (argName, argValue) in argumentsDict {
-                let value = try JSONValue.processJSONValue(argValue)
-
-                // Perform type checking against expectedType
-                let expectedType = function?.parameters.properties[argName]?.type
-                if !value.conformsTo(type: expectedType) {
+                guard let argType = function?.parameters.properties[argName]?.type else {
                     throw DecodingError.dataCorruptedError(forKey: .arguments,
                                                            in: container,
-                                                           debugDescription: "Invalid type for \(argName). Expected \(expectedType?.rawValue ?? "unknown"), but got \(value.typeDescription)")
+                                                           debugDescription: "No type provided for \(argName). Decoding not possible.")
                 }
+                let value = try JSONValue.createFromValue(argValue, ofType: argType)
 
                 decodedArguments[argName] = value
             }

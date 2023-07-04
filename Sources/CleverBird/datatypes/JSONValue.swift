@@ -8,7 +8,6 @@ public enum JSONValue: Codable {
     case boolean(Bool)
     case number(Double)
     case integer(Int)
-    case object([String: JSONValue])
     case array([JSONValue])
 
     var typeDescription: String {
@@ -23,8 +22,6 @@ public enum JSONValue: Codable {
             return "number"
         case .integer(_):
             return "integer"
-        case .object(_):
-            return "object"
         case .array(_):
             return "array"
         }
@@ -40,8 +37,6 @@ public enum JSONValue: Codable {
             self = .number(x)
         } else if let x = try? container.decode(Int.self) {
             self = .integer(x)
-        } else if let x = try? container.decode([String: JSONValue].self) {
-            self = .object(x)
         } else if let x = try? container.decode([JSONValue].self) {
             self = .array(x)
         } else if container.decodeNil() {
@@ -54,6 +49,8 @@ public enum JSONValue: Codable {
     public func encode(to encoder: Encoder) throws {
         var container = encoder.singleValueContainer()
         switch self {
+        case .null:
+            try container.encodeNil()
         case .string(let x):
             try container.encode(x)
         case .boolean(let x):
@@ -62,58 +59,50 @@ public enum JSONValue: Codable {
             try container.encode(x)
         case .integer(let x):
             try container.encode(x)
-        case .object(let x):
-            try container.encode(x)
         case .array(let x):
             try container.encode(x)
+        }
+    }
+
+    static func createFromValue(_ value: Any, ofType type: JSONType) throws -> JSONValue {
+
+        switch type {
+
         case .null:
-            try container.encodeNil()
-        }
-    }
+            throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: [], debugDescription: "Value provided for null type"))
 
-    func conformsTo(type: JSONType?) -> Bool {
-        switch (self, type) {
-        case (.string(_), .string),
-            (.number(_), .number),
-            (.integer(_), .integer),
-            (.object(_), .object),
-            (.array(_), .array),
-            (.boolean(_), .boolean),
-            (.null, .null):
-            return true
-        default:
-            return false
-        }
-    }
+        case .string:
+            guard value is String else {
+                throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: [], debugDescription: "Value was not expected type of String"))
+            }
+            return .string(value as! String)
 
-    static func processJSONValue(_ value: Any) throws -> JSONValue {
-        switch value {
-        case let stringValue as String:
-            return .string(stringValue)
-        case let numberValue as Double:
-            if numberValue.truncatingRemainder(dividingBy: 1) == 0 {
-                // The number is actually an integer
-                return .integer(Int(numberValue))
-            } else {
-                // The number is a true double
-                return .number(numberValue)
+        case .boolean:
+            guard value is Bool else {
+                throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: [], debugDescription: "Value was not expected type of Bool"))
             }
-        case let intValue as Int:
-            return .integer(intValue)
-        case let boolValue as Bool:
-            return .boolean(boolValue)
-        case is NSNull:
-            return .null
-        case let arrayValue as [Any]:
-            return .array(try arrayValue.map(processJSONValue))
-        case let objectValue as [String: Any]:
-            var result: [String: JSONValue] = [:]
-            for (key, value) in objectValue {
-                result[key] = try processJSONValue(value)
+            return .boolean(value as! Bool)
+
+        case .number:
+            guard value is Double else {
+                throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: [], debugDescription: "Value was not expected type of Double"))
             }
-            return .object(result)
-        default:
-            throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: [], debugDescription: "Invalid JSON value"))
+            return .number(value as! Double)
+
+        case .integer:
+            guard value is Int else {
+                throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: [], debugDescription: "Value was not expected type of Int"))
+            }
+            return .integer(value as! Int)
+
+        case .array:
+            guard value is [Any] else {
+                throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: [], debugDescription: "Value was not expected type of [Any]"))
+            }
+            let arrayValue = value as! [Any]
+            return .array(try arrayValue.map { item in
+                try createFromValue(item, ofType: .string)
+            })
         }
     }
 

@@ -74,16 +74,40 @@ public struct Function: Codable {
             /// The allowed values for the parameter if it's an enum. The AI should choose from these values when invoking the function.
             public let enumCases: [String]?
 
+            /// The definition of the individual items in the parameter if it's an array. The AI should populate the array with values based on this when invoking the function.
+            public let items: ArrayItems?
+
             enum CodingKeys: String, CodingKey {
                 case type
                 case description
                 case enumCases = "enum"
+                case items
             }
 
-            public init(type: JSONType, description: String? = nil, enumCases: [String]? = nil) {
+            public init(type: JSONType,
+                        description: String? = nil,
+                        enumCases: [String]? = nil,
+                        items: ArrayItems? = nil) {
                 self.type = type
                 self.description = description
                 self.enumCases = enumCases
+                self.items = items
+            }
+
+            public struct ArrayItems: Codable {
+
+                /// The type of the items in the array. It could be "string", "integer", etc., based on the JSON Schema types.
+                public let type: JSONType
+
+                /// A description of what a single item in the array represents
+                public let description: String?
+
+                public init(type: JSONType,
+                            description: String? = nil) {
+                    self.type = type
+                    self.description = description
+                }
+
             }
         }
 
