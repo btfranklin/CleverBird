@@ -91,6 +91,10 @@ public struct Function: Codable {
                 self.type = type
                 self.description = description
                 self.enumCases = enumCases
+
+                if items != nil && type != .array {
+                    fatalError("Array items can only be provided to properties of type 'array', but type is '\(type)'")
+                }
                 self.items = items
             }
 
