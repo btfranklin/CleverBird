@@ -104,6 +104,9 @@ public struct TokenEncoder {
 
         for result in TokenEncoder.pattern.findAll(in: text) {
             let token = String(result.value.utf8.map { TokenEncoder.byteEncoder[$0]! })
+
+            if token.isEmpty { continue }
+
             let word = cache[token] ?? bpe(token: token)
             cache[token] = word
 
