@@ -11,6 +11,8 @@
 
 `CleverBird` is focused narrowly on chat-based interactions, and making them awesome.
 
+Please note that `CleverBird` is an *unofficial* package, not provided by OpenAI itself.
+
 ## Features
 
 - Asynchronous API calls with Swift's async/await syntax
