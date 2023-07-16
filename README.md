@@ -29,14 +29,13 @@ Import the `CleverBird` package:
 import CleverBird
 ```
 
-Initialize an `OpenAIAPIConnection` with your API key:
+Initialize an `OpenAIAPIConnection` with your API key. Please note that API keys should always be loaded from environment variables, and not hard-coded into your source. After you have loaded your API key, pass it to the initializer of the connection:
 
 ```swift
-let openAIAPIConnection = OpenAIAPIConnection(apiKey: "your_api_key_here")
+let openAIAPIConnection = OpenAIAPIConnection(apiKey: <OPENAI_API_KEY>)
 ```
 
-Create a `ChatThread` instance with the connection, and
-add system, user, or assistant messages to the chat thread:
+Create a `ChatThread` instance with the connection, and add system, user, or assistant messages to the chat thread:
 
 ```swift
 let chatThread = ChatThread(connection: openAIAPIConnection)
