@@ -4,7 +4,7 @@ import Foundation
 
 extension StreamableChatThread {
 
-    public func complete(model: Model? = nil,
+    public func complete(model: ChatModel? = nil,
                          temperature: Percentage? = nil,
                          topP: Percentage? = nil,
                          stop: [String]? = nil,
@@ -30,7 +30,7 @@ extension StreamableChatThread {
             self.addMessage(message)
         }
 
-        let asyncByteStream = try await self.chatThread.connection.createAsyncByteStream(for: requestBody)
+        let asyncByteStream = try await self.chatThread.connection.createChatCompletionAsyncByteStream(for: requestBody)
         
         return AsyncThrowingStream { [weak self] continuation in
             guard let strongSelf = self else {

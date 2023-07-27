@@ -3,7 +3,7 @@
 public class ChatThread {
 
     let connection: OpenAIAPIConnection
-    let model: Model
+    let model: ChatModel
     let temperature: Percentage
     let topP: Percentage?
     let stop: [String]?
@@ -16,7 +16,7 @@ public class ChatThread {
     var functions: [Function]?
 
     public init(connection: OpenAIAPIConnection,
-                model: Model = .gpt4,
+                model: ChatModel = .gpt4,
                 temperature: Percentage = 0.7,
                 topP: Percentage? = nil,
                 numberOfCompletionsToCreate: Int? = nil,

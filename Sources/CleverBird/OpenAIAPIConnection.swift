@@ -5,7 +5,8 @@ import Get
 
 public class OpenAIAPIConnection {
 
-    private static let CHAT_COMPLETION_PATH = "/v1/chat/completions"
+    private let chatCompletionPath = "/v1/chat/completions"
+    private let embeddingsPath = "/v1/embeddings"
 
     let apiKey: String
     let organization: String?
@@ -20,9 +21,9 @@ public class OpenAIAPIConnection {
         var urlComponents = URLComponents()
         urlComponents.scheme = "https"
         urlComponents.host = "api.openai.com"
-        let openAIChatCompletionURL = urlComponents.url
+        let openAIAPIURL = urlComponents.url
 
-        let clientConfiguration = APIClient.Configuration(baseURL: openAIChatCompletionURL)
+        let clientConfiguration = APIClient.Configuration(baseURL: openAIAPIURL)
         clientConfiguration.encoder.keyEncodingStrategy = .convertToSnakeCase
         clientConfiguration.decoder.keyDecodingStrategy = .convertFromSnakeCase
 
@@ -38,17 +39,17 @@ public class OpenAIAPIConnection {
         self.requestHeaders = requestHeaders
     }
 
-    func createRequest(for body: Encodable) async throws -> Request<ChatCompletionResponse> {
+    func createChatCompletionRequest(for body: Encodable) async throws -> Request<ChatCompletionResponse> {
         Request<ChatCompletionResponse>(
-            path: Self.CHAT_COMPLETION_PATH,
+            path: self.chatCompletionPath,
             method: .post,
             body: body,
             headers: self.requestHeaders)
     }
 
-    func createAsyncByteStream(for body: Encodable) async throws -> URLSession.AsyncBytes {
+    func createChatCompletionAsyncByteStream(for body: Encodable) async throws -> URLSession.AsyncBytes {
 
-        let request = try await createRequest(for: body)
+        let request = try await createChatCompletionRequest(for: body)
         let urlRequest = try await client.makeURLRequest(for: request)
         let (asyncByteStream, response) = try await client.session.bytes(for: urlRequest)
 

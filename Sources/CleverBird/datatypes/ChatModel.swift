@@ -1,4 +1,4 @@
-public enum Model: Codable {
+public enum ChatModel: Codable {
     case gpt35Turbo
     case gpt4
     case specific(String)
@@ -32,5 +32,4 @@ public enum Model: Codable {
 
         try container.encode(modelString)
     }
-
 }

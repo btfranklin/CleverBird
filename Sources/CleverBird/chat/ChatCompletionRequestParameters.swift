@@ -1,7 +1,7 @@
 //  Created by B.T. Franklin on 4/15/23
 
 public struct ChatCompletionRequestParameters: Codable {
-    public let model: Model
+    public let model: ChatModel
     public let temperature: Percentage
     public let topP: Percentage?
     public let stream: Bool
@@ -14,7 +14,7 @@ public struct ChatCompletionRequestParameters: Codable {
     public let functions: [Function]?
     public let functionCallMode: FunctionCallMode?
 
-    public init(model: Model,
+    public init(model: ChatModel,
                 temperature: Percentage,
                 topP: Percentage? = nil,
                 stream: Bool = false,

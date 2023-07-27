@@ -1,7 +1,7 @@
 //  Created by B.T. Franklin on 5/5/23
 
 extension ChatThread {
-    public func complete(model: Model? = nil,
+    public func complete(model: ChatModel? = nil,
                          temperature: Percentage? = nil,
                          topP: Percentage? = nil,
                          stop: [String]? = nil,
@@ -36,7 +36,7 @@ extension ChatThread {
                 FunctionRegistry.shared.clearFunctions()
             }
 
-            let request = try await self.connection.createRequest(for: requestBody)
+            let request = try await self.connection.createChatCompletionRequest(for: requestBody)
             let response = try await self.connection.client.send(request)
             let completion = response.value
             guard let firstChoiceMessage = completion.choices.first?.message else {
