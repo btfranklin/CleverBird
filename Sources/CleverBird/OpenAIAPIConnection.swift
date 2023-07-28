@@ -5,14 +5,10 @@ import Get
 
 public class OpenAIAPIConnection {
 
-    private let chatCompletionPath = "/v1/chat/completions"
-    private let embeddingsPath = "/v1/embeddings"
-
     let apiKey: String
     let organization: String?
     let client: APIClient
-
-    private let requestHeaders: [String:String]
+    let requestHeaders: [String:String]
 
     public init(apiKey: String, organization: String? = nil) {
         self.apiKey = apiKey
@@ -37,30 +33,5 @@ public class OpenAIAPIConnection {
             requestHeaders["OpenAI-Organization"] = organization
         }
         self.requestHeaders = requestHeaders
-    }
-
-    func createChatCompletionRequest(for body: Encodable) async throws -> Request<ChatCompletionResponse> {
-        Request<ChatCompletionResponse>(
-            path: self.chatCompletionPath,
-            method: .post,
-            body: body,
-            headers: self.requestHeaders)
-    }
-
-    func createChatCompletionAsyncByteStream(for body: Encodable) async throws -> URLSession.AsyncBytes {
-
-        let request = try await createChatCompletionRequest(for: body)
-        let urlRequest = try await client.makeURLRequest(for: request)
-        let (asyncByteStream, response) = try await client.session.bytes(for: urlRequest)
-
-        guard let response = response as? HTTPURLResponse else {
-            throw CleverBirdError.responseParsingFailed(message: "Expected response of type HTTPURLResponse, but received: \(response)")
-        }
-
-        guard (200...299).contains(response.statusCode) else {
-            throw CleverBirdError.requestFailed(message: "Response status code: \(response.statusCode)")
-        }
-
-        return asyncByteStream
     }
 }
