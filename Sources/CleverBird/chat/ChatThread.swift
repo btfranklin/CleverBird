@@ -19,7 +19,6 @@ public class ChatThread {
                 model: ChatModel = .gpt4,
                 temperature: Percentage = 0.7,
                 topP: Percentage? = nil,
-                numberOfCompletionsToCreate: Int? = nil,
                 stop: [String]? = nil,
                 maxTokens: Int? = nil,
                 presencePenalty: Penalty? = nil,

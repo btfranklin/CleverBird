@@ -60,7 +60,6 @@ In the example above, we initialized a `ChatThread` with a specific model, tempe
 - `model`: The model to use for the completion.
 - `temperature`: Controls randomness. Higher values (up to 1) generate more random outputs, while lower values generate more deterministic outputs.
 - `topP`: This is the nucleus sampling parameter. It specifies the probability mass to cover with the prediction.
-- `numberOfCompletionsToCreate`: The number of completions to create.
 - `stop`: An array of strings. The model will stop generating when it encounters any of these strings.
 - `maxTokens`: The maximum number of tokens to generate.
 - `presencePenalty`: A penalty for using tokens that have already been used.
