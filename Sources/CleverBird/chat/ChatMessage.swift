@@ -69,19 +69,19 @@ public struct ChatMessage: Codable, Identifiable {
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        role = try container.decode(Role.self, forKey: .role)
-        content = try container.decodeIfPresent(String.self, forKey: .content)
-        functionCall = try container.decodeIfPresent(FunctionCall.self, forKey: .functionCall)
-        name = try container.decodeIfPresent(String.self, forKey: .name)
-        id = "pending"
+        self.role = try container.decode(Role.self, forKey: .role)
+        self.content = try container.decodeIfPresent(String.self, forKey: .content)
+        self.functionCall = try container.decodeIfPresent(FunctionCall.self, forKey: .functionCall)
+        self.name = try container.decodeIfPresent(String.self, forKey: .name)
+        self.id = "pending"
     }
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(role, forKey: .role)
-        try container.encodeIfPresent(content, forKey: .content)
-        try container.encodeIfPresent(functionCall, forKey: .functionCall)
-        try container.encodeIfPresent(name, forKey: .name)
+        try container.encode(self.role, forKey: .role)
+        try container.encodeIfPresent(self.content, forKey: .content)
+        try container.encodeIfPresent(self.functionCall, forKey: .functionCall)
+        try container.encodeIfPresent(self.name, forKey: .name)
     }
 }
 
