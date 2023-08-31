@@ -1,6 +1,6 @@
 //  Created by B.T. Franklin on 7/25/23
 
-public enum EmbeddingsModel: Codable {
+public enum EmbeddingModel: Codable {
     case textEmbeddingAda002
     case specific(String)
 
