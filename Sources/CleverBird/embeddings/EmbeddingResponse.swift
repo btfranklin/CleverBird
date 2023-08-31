@@ -3,7 +3,7 @@
 struct EmbeddingResponse: Codable {
 
     struct EmbeddingData: Codable {
-        let embedding: [Double]
+        let embedding: Vector
         let index: Int
     }
 
