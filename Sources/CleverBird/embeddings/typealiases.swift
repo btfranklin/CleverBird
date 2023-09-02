@@ -3,3 +3,4 @@
 public typealias Document = String
 public typealias Vector = [Double]
 public typealias Similarity = Double
+public typealias SimilarityFunction = ([Vector], Vector) -> [Similarity]
