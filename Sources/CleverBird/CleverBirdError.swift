@@ -7,4 +7,5 @@ public enum CleverBirdError: Error, Equatable {
     case tokenEncodingError(message: String)
     case invalidMessageContent
     case invalidFunctionMessage
+    case invalidEmbeddingRequest(message: String)
 }
