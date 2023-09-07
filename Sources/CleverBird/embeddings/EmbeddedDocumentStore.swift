@@ -13,8 +13,8 @@ public class EmbeddedDocumentStore {
     let model: EmbeddingModel
     let user: String?
 
-    public private(set) var documents: [Document] = []
-    public private(set) var embeddings: [Vector] = []
+    public internal(set) var documents: [Document] = []
+    public internal(set) var embeddings: [Vector] = []
     public var dictionaryRepresentation: [Document: Vector] {
         return zip(documents, embeddings).reduce(into: [Document: Vector]()) { result, pair in
             result[pair.0] = pair.1
