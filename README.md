@@ -7,7 +7,9 @@
 [![GitHub tag](https://img.shields.io/github/tag/btfranklin/CleverBird.svg)](https://github.com/btfranklin/CleverBird)
 [![build](https://github.com/btfranklin/CleverBird/actions/workflows/build.yml/badge.svg)](https://github.com/btfranklin/CleverBird/actions/workflows/build.yml)
 
-`CleverBird` is a Swift Package that provides a convenient way to interact with OpenAI's chat APIs and perform various tasks, including token counting and encoding. The package is designed to deliver a superior Developer Experience (DX) by making the chat thread the center of the interactions. While there are numerous Swift Packages available for interacting with OpenAI, `CleverBird` stands out due to its focus on simplicity and seamless integration of the handy `TokenEncoder` class. 
+`CleverBird` is a Swift Package that provides a convenient way to interact with OpenAI's chat APIs and perform various tasks, including token counting and encoding. The package is designed to deliver a superior Developer Experience (DX) by making the chat thread the center of the interactions.
+
+`CleverBird` includes support for document embeddings and similarity queries. This makes it a versatile tool for a broad range of applications, especially cases where chat prompts need enhanced contextual memory.
 
 `CleverBird` is focused narrowly on chat-based interactions, and making them awesome.
 
@@ -15,11 +17,14 @@ Please note that `CleverBird` is an *unofficial* package, not provided by OpenAI
 
 ## Features
 
+### Core Features
 - Asynchronous API calls with Swift's async/await syntax
-- Supports token counting and encoding with the `TokenEncoder` class
-- Allows customization of various parameters, such as temperature and penalties
 - Streamed responses for real-time generated content
 - Built-in token counting for usage limit calculations
+
+### Specialized Features
+- Token Encoding: Facilitates token counting and encoding through the `TokenEncoder` class.
+- Document Embedding and Similarity Queries: Utilize the `EmbeddedDocumentStore` class for managing and querying document similarities.
 
 ## Usage Instructions
 
@@ -161,6 +166,46 @@ let chatThread = ChatThread(connection: openAIAPIConnection,
 Finally, call the `complete()` function to generate a response. If the assistant needs to perform a function during the conversation, it will use the function definitions you provided.
 
 Please note that functions are only supported in non-streaming completions at this time.
+
+## Using Embeddings
+
+The `EmbeddedDocumentStore` class provides a convenient way to manage and query a collection of documents based on their similarity. This class allows you to:
+
+- Add documents to an internal store.
+- Generate embeddings for those documents using a specified model.
+- Query the store for similar documents to a given input document.
+
+First, add an instance of the `EmbeddedDocumentStore` to your code:
+
+```swift
+let openAIAPIConnection = OpenAIAPIConnection(apiKey: "your_api_key_here")
+let embeddedDocumentStore = EmbeddedDocumentStore(connection: connection)
+```
+
+You can add a single document or a batch of documents to the store.
+
+```swift
+let singleDocument = "My single document"
+try await embeddedDocumentStore.embedAndStore(singleDocument)
+
+let documentCollection = ["First document", "Second document", "Third document"]
+try await embeddedDocumentStore.embedAndStore(documentCollection)
+
+```
+
+You can query the store for documents that are similar to an input document.
+
+```swift
+let similarityResults = try await embeddedDocumentStore.queryDocumentSimilarity("Query text here")
+let mostSimilarResult = similarityResults.first?.document ?? "No result returned"
+```
+
+The store can be saved to and loaded from a file (represented in JSON format) for persistent storage.
+
+```swift
+embeddedDocumentStore.save(to: fileURL)
+embeddedDocumentStore.load(from: fileURL)
+```
 
 ## License
 
