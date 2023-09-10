@@ -1,5 +1,7 @@
 //  Created by B.T. Franklin on 5/5/23
 
+import Foundation
+
 struct ChatCompletionResponse: Codable, Identifiable {
 
     struct Choice: Codable {
@@ -7,6 +9,7 @@ struct ChatCompletionResponse: Codable, Identifiable {
         enum FinishReason: String, Codable {
             case stop
             case maxTokens
+            case functionCall = "function_call"
         }
 
         let message: ChatMessage
