@@ -92,7 +92,7 @@ public class ChatThread {
     }
 
     @discardableResult
-    func addFunctionResponse(_ content: String, for functionCall: FunctionCall) -> ChatThread {
+    public func addFunctionResponse(_ content: String, for functionCall: FunctionCall) -> ChatThread {
         do {
             let responseMessage = try ChatMessage(role: .function,
                                                   content: content,

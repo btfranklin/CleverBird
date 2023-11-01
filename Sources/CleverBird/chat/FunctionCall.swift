@@ -59,4 +59,10 @@ public struct FunctionCall: Codable {
         self.name = functionName
     }
 
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(self.name, forKey: .name)
+        let argumentsAsString = try String(data: JSONEncoder().encode(self.arguments), encoding: .utf8) ?? ""
+        try container.encode(argumentsAsString, forKey: .arguments)
+    }
 }
