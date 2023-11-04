@@ -37,13 +37,6 @@ public struct ChatMessage: Codable, Identifiable {
                 id: String? = nil,
                 functionCall: FunctionCall? = nil) throws {
 
-        // Validation: Name is required if role is function, and it should be the name of the function whose response is in the content.
-        if role == .function {
-            guard let functionCall = functionCall, let content = content, content.contains(functionCall.name) else {
-                throw CleverBirdError.invalidFunctionMessage
-            }
-        }
-
         // Validation: Content is required for all messages except assistant messages with function calls.
         if content == nil && !(role == .assistant && functionCall != nil) {
             throw CleverBirdError.invalidMessageContent
@@ -51,8 +44,14 @@ public struct ChatMessage: Codable, Identifiable {
 
         self.role = role
         self.content = content
-        self.functionCall = functionCall
         self.name = functionCall?.name
+        if role == .function {
+            // Attention: if the role is function I need to set the functionCall to nil, otherwise this will
+            // be encoded into the message which leads to an error.
+            self.functionCall = nil
+        } else {
+            self.functionCall = functionCall
+        }
 
         if let id = id {
             self.id = id
@@ -79,7 +78,8 @@ public struct ChatMessage: Codable, Identifiable {
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(self.role, forKey: .role)
-        try container.encodeIfPresent(self.content, forKey: .content)
+        // The content field needs to be present even if it is nil, in this case encode it to Null
+        try container.encode(self.content, forKey: .content)
         try container.encodeIfPresent(self.functionCall, forKey: .functionCall)
         try container.encodeIfPresent(self.name, forKey: .name)
     }
