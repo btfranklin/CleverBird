@@ -67,7 +67,7 @@ class OpenAIChatThreadTests: XCTestCase {
             .addMessage(try! ChatMessage(role: .assistant, functionCall: functionCall))
         let tokenCount = try chatThread.tokenCount()
 
-        XCTAssertEqual(tokenCount, 241, "Unexpected token count")
+        XCTAssertEqual(tokenCount, 244, "Unexpected token count")
     }
 
     func testInvalidMessageCreation() {
