@@ -1,6 +1,7 @@
 public enum ChatModel: Codable {
     case gpt35Turbo
     case gpt4
+    case gpt4Turbo
     case specific(String)
 
     public init(from decoder: Decoder) throws {
@@ -26,6 +27,8 @@ public enum ChatModel: Codable {
             modelString = "gpt-3.5-turbo"
         case .gpt4:
             modelString = "gpt-4"
+        case .gpt4Turbo:
+            modelString = "gpt-4-1106-preview"
         case .specific(let specificString):
             modelString = specificString
         }

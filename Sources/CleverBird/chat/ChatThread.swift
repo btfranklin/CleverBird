@@ -16,7 +16,7 @@ public class ChatThread {
     var functions: [Function]?
 
     public init(connection: OpenAIAPIConnection,
-                model: ChatModel = .gpt4,
+                model: ChatModel = .gpt4Turbo,
                 temperature: Percentage = 0.7,
                 topP: Percentage? = nil,
                 stop: [String]? = nil,
