@@ -7,13 +7,7 @@
 
 import Foundation
 
-public enum JSONObject {
-    case text, JSON
-}
-
-extension JSONObject: Codable {
-    enum CodingKeys {
-        case text
-        case JSON = "json_object"
-    }
+public enum JSONObject: String, Codable {
+    case text
+    case JSON = "json_object"
 }
