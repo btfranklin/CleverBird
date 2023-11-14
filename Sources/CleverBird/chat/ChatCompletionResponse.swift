@@ -2,9 +2,9 @@
 
 import Foundation
 
-struct ChatCompletionResponse: Codable, Identifiable {
+public struct ChatCompletionResponse: Codable, Identifiable {
 
-    struct Choice: Codable {
+    public struct Choice: Codable {
 
         enum FinishReason: String, Codable {
             case stop
@@ -23,15 +23,15 @@ struct ChatCompletionResponse: Codable, Identifiable {
         }
     }
 
-    struct Usage: Codable {
+    public struct Usage: Codable {
         let promptTokens: Int
         let completionTokens: Int
         let totalTokens: Int
     }
 
-    let choices: [Choice]
-    let usage: Usage
-    let id: String
+    public let choices: [Choice]
+    public let usage: Usage
+    public let id: String
 
     enum CodingKeys: String, CodingKey {
         case choices
@@ -39,7 +39,7 @@ struct ChatCompletionResponse: Codable, Identifiable {
         case id
     }
 
-    init(from decoder: Decoder) throws {
+    public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         self.id = try container.decode(String.self, forKey: .id)
