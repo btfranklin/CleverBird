@@ -2,6 +2,7 @@ import Foundation
 
 public enum CleverBirdError: Error, Equatable {
     case requestFailed(message: String)
+    case unauthorized(message: String)
     case responseParsingFailed(message: String)
     case tokenEncoderCreationFailed(message: String)
     case tokenEncodingError(message: String)

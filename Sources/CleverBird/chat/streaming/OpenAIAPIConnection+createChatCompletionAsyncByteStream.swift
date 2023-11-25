@@ -14,7 +14,11 @@ extension OpenAIAPIConnection {
         }
 
         guard (200...299).contains(response.statusCode) else {
-            throw CleverBirdError.requestFailed(message: "Response status code: \(response.statusCode)")
+            if response.statusCode == 401 {
+                throw CleverBirdError.unauthorized(message: "Unauthorized")
+            } else {
+                throw CleverBirdError.requestFailed(message: "Response status code: \(response.statusCode)")
+            }
         }
 
         return asyncByteStream
