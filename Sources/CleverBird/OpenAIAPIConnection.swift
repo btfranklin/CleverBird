@@ -5,8 +5,8 @@ import Get
 
 public class OpenAIAPIConnection {
 
-    let apiKey: String
-    let organization: String?
+    public let apiKey: String
+    public let organization: String?
     let client: APIClient
     let requestHeaders: [String:String]
 
