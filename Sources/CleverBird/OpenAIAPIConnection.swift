@@ -7,7 +7,7 @@ public class OpenAIAPIConnection {
 
     public let apiKey: String
     public let organization: String?
-    let client: APIClient
+    public let client: APIClient
     let requestHeaders: [String:String]
 
     public init(apiKey: String, organization: String? = nil) {
