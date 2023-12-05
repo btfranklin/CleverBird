@@ -12,6 +12,6 @@ public struct EmbeddingResponse: Codable {
         let totalTokens: Int
     }
 
-    let data: [EmbeddingData]
-    let usage: Usage
+    public let data: [EmbeddingData]
+    public let usage: Usage
 }
