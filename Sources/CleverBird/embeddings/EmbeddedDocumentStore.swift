@@ -7,7 +7,7 @@ public class EmbeddedDocumentStore {
         public let similarity: Similarity
     }
 
-    private let maxBatchSize = 2048
+    private let maxBatchSize = 8192
 
     let connection: OpenAIAPIConnection
     let model: EmbeddingModel
@@ -54,8 +54,8 @@ public class EmbeddedDocumentStore {
 
     private func embed(_ documents: [Document]) async throws -> EmbeddingResponse {
 
-        guard documents.count >= 1 && documents.count <= 2048 else {
-            throw CleverBirdError.invalidEmbeddingRequest(message: "Number of documents to embed must be between 1 and 2048.")
+        guard documents.count >= 1 && documents.count <= 8192 else {
+            throw CleverBirdError.invalidEmbeddingRequest(message: "Number of documents to embed must be between 1 and 8192.")
         }
 
         let requestBody = EmbeddingRequestParameters(
