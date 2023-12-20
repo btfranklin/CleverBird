@@ -10,13 +10,14 @@ public class OpenAIAPIConnection {
     public let client: APIClient
     let requestHeaders: [String:String]
 
-    public init(apiKey: String, organization: String? = nil, scheme: String = "https", host: String = "api.openai.com") {
+    public init(apiKey: String, organization: String? = nil, scheme: String = "https", host: String = "api.openai.com", port: Int = 443) {
         self.apiKey = apiKey
         self.organization = organization
 
         var urlComponents = URLComponents()
         urlComponents.scheme = scheme
         urlComponents.host = host
+        urlComponents.port = port
         let openAIAPIURL = urlComponents.url
 
         let clientConfiguration = APIClient.Configuration(baseURL: openAIAPIURL)
