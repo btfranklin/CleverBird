@@ -9,6 +9,7 @@ public enum CleverBirdError: Error, Equatable {
     case invalidMessageContent
     case invalidFunctionMessage
     case invalidEmbeddingRequest(message: String)
+    case tooManyRequests
 }
 
 extension CleverBirdError: LocalizedError {
@@ -30,6 +31,8 @@ extension CleverBirdError: LocalizedError {
             "Invalid function message"
         case .invalidEmbeddingRequest(message: let message):
             "Invalid embeddings request: \(message)"
+        case .tooManyRequests:
+            "Too many requests"
         }
     }
 }
