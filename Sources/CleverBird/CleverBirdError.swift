@@ -16,21 +16,21 @@ extension CleverBirdError: LocalizedError {
     public var errorDescription: String? {
         switch self {
         case .requestFailed(message: let message):
-            "Request failed: \(message)"
+            "Request failed. \(message)"
         case .unauthorized(message: let message):
-            "Unauthorized: \(message)"
+            "Unauthorized. \(message)"
         case .responseParsingFailed(message: let message):
-            "Parsing failed: \(message)"
+            "Parsing failed. \(message)"
         case .tokenEncoderCreationFailed(message: let message):
-            "Encoding failed: \(message)"
+            "Encoding failed. \(message)"
         case .tokenEncodingError(message: let message):
-            "Token encoding failed: \(message)"
+            "Token encoding failed. \(message)"
         case .invalidMessageContent:
             "Invalid message content"
         case .invalidFunctionMessage:
             "Invalid function message"
         case .invalidEmbeddingRequest(message: let message):
-            "Invalid embeddings request: \(message)"
+            "Invalid embeddings request. \(message)"
         case .tooManyRequests:
             "Too many requests"
         }
