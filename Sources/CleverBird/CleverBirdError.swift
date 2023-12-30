@@ -3,6 +3,7 @@ import Foundation
 public enum CleverBirdError: Error, Equatable {
     case requestFailed(message: String)
     case unauthorized(message: String)
+    case forbidden(message: String)
     case responseParsingFailed(message: String)
     case tokenEncoderCreationFailed(message: String)
     case tokenEncodingError(message: String)
@@ -19,6 +20,8 @@ extension CleverBirdError: LocalizedError {
             "Request failed. \(message)"
         case .unauthorized(message: let message):
             "Unauthorized. \(message)"
+        case .forbidden(message: let message):
+            "Forbidden. \(message)"
         case .responseParsingFailed(message: let message):
             "Parsing failed. \(message)"
         case .tokenEncoderCreationFailed(message: let message):
@@ -33,6 +36,21 @@ extension CleverBirdError: LocalizedError {
             "Invalid embeddings request. \(message)"
         case .tooManyRequests:
             "Too many requests"
+        }
+    }
+}
+
+extension CleverBirdError {
+    init(statusCode: Int) {
+        switch statusCode {
+        case 401:
+            self = .unauthorized(message: "")
+        case 403:
+            self = .forbidden(message: "")
+        case 429:
+            self = .tooManyRequests
+        default:
+            self = .requestFailed(message: "Response status code: \(statusCode)")
         }
     }
 }
