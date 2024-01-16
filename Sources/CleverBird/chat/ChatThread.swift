@@ -1,38 +1,14 @@
 //  Created by B.T. Franklin on 5/5/23
 
-public class ChatThread {
+public class ChatThread: Codable {
 
-    let connection: OpenAIAPIConnection
-    let model: ChatModel
-    let temperature: Percentage
-    let topP: Percentage?
-    let stop: [String]?
-    let maxTokens: Int?
-    let presencePenalty: Penalty?
-    let frequencyPenalty: Penalty?
     let user: String?
-
+    
     var messages: [ChatMessage] = []
     var functions: [Function]?
 
-    public init(connection: OpenAIAPIConnection,
-                model: ChatModel = .gpt4,
-                temperature: Percentage = 0.7,
-                topP: Percentage? = nil,
-                stop: [String]? = nil,
-                maxTokens: Int? = nil,
-                presencePenalty: Penalty? = nil,
-                frequencyPenalty: Penalty? = nil,
-                user: String? = nil,
+    public init(user: String? = nil,
                 functions: [Function]? = nil) {
-        self.connection = connection
-        self.model = model
-        self.temperature = temperature
-        self.topP = topP
-        self.stop = stop
-        self.maxTokens = maxTokens
-        self.presencePenalty = presencePenalty
-        self.frequencyPenalty = frequencyPenalty
         self.user = user
         self.functions = functions
     }
