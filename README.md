@@ -40,74 +40,64 @@ Initialize an `OpenAIAPIConnection` with your API key. Please note that API keys
 let openAIAPIConnection = OpenAIAPIConnection(apiKey: <OPENAI_API_KEY>)
 ```
 
-Create a `ChatThread` instance with the connection, and add system, user, or assistant messages to the chat thread:
+Create a `ChatThread` instance and add system, user, or assistant messages to the chat thread:
 
 ```swift
-let chatThread = ChatThread(connection: openAIAPIConnection)
+let chatThread = ChatThread()
     .addSystemMessage(content: "You are a helpful assistant.")
     .addUserMessage(content: "Who won the world series in 2020?")
 ```
 
-The `ChatThread` initializer includes a mandatory `connection` parameter and various optional parameters. You can set defaults for your thread by using any subset of these optional parameters:
+Generate a completion using the chat thread and passing the API connection:
 
 ```swift
-let chatThread = ChatThread(
-    connection: openAIAPIConnection, 
+let completion = try await chatThread.complete(using: openAIAPIConnection)
+```
+
+The `complete(using:)` method also includes various optional parameters:
+
+```swift
+let completion = chatThread.complete(
+    using: openAIAPIConnection, 
     model: .gpt4, 
     temperature: 0.7, 
     maxTokens: 500
 )
 ```
 
-In the example above, we initialized a `ChatThread` with a specific model, temperature, and maximum number of tokens. All parameters except `connection` are optional. The full list of parameters is as follows:
+In the example above, we created a completion using a specific model, temperature, and maximum number of tokens. All parameters except `connection` are optional. The full list of parameters is as follows:
 
 - `connection`: The API connection object (required).
 - `model`: The model to use for the completion.
 - `temperature`: Controls randomness. Higher values (up to 1) generate more random outputs, while lower values generate more deterministic outputs.
-- `topP`: This is the nucleus sampling parameter. It specifies the probability mass to cover with the prediction.
+- `topP`: The nucleus sampling parameter. It specifies the probability mass to cover with the prediction.
 - `stop`: An array of strings. The model will stop generating when it encounters any of these strings.
 - `maxTokens`: The maximum number of tokens to generate.
 - `presencePenalty`: A penalty for using tokens that have already been used.
 - `frequencyPenalty`: A penalty for using frequent tokens.
-- `user`: The user ID associated with the chat.
-
-Generate a completion using the chat thread:
-
-```swift
-let completion = try await chatThread.complete()
-```
+- `functions`: The tool functions (aka "actions") to make available to the model.
+- `functionCallMode`: The function calling mode: `.auto`, `.none`, or `.specific`.
 
 The response messages are automatically appended onto the thread, so
 you can continue interacting with it by just adding new user messages
 and requesting additional completions.
 
-You can customize each call to `complete()` with the same parameters as the `ChatThread` initializer, allowing you to override the defaults set during initialization:
+You can customize each call to `complete(using:)` with different values for the same parameters on subsequent calls in the same thread, if you want:
 
 ```swift
 let completion = try await chatThread.complete(
+    using: openAIAPIConnection,
     model: .gpt35Turbo, 
     temperature: 0.5, 
     maxTokens: 300
 )
 ```
 
-In this example, we override the model, temperature, and maximum number of tokens for this specific completion. The parameters you can use in the `complete()` method include:
-
-- `model`: The model to use for the completion.
-- `temperature`: Controls randomness. Higher values (up to 1) generate more random outputs, while lower values generate more deterministic outputs.
-- `topP`: This is the nucleus sampling parameter. It specifies the probability mass to cover with the prediction.
-- `stop`: An array of strings. The model will stop generating when it encounters any of these strings.
-- `maxTokens`: The maximum number of tokens to generate.
-- `presencePenalty`: A penalty for using tokens that have already been used.
-- `frequencyPenalty`: A penalty for using frequent tokens.
-
-All parameters are optional and default to the values set during `ChatThread` initialization if not specified.
-
 Generate a completion with streaming using the streaming version of a chat thread:
 
 ```swift
-let chatThread = ChatThread(connection: openAIAPIConnection).withStreaming()
-let completionStream = try await chatThread.complete()
+let chatThread = ChatThread().withStreaming()
+let completionStream = try await chatThread.complete(using: openAIAPIConnection)
 for try await messageChunk in completionStream {
     print("Received message chunk: \(messageChunk)")
 }
@@ -157,13 +147,11 @@ let getCurrentWeather = Function(name: "get_current_weather",
 Then, initialize your `ChatThread` with your API connection and an array of functions:
 
 ```swift
-let openAIAPIConnection = OpenAIAPIConnection(apiKey: "your_api_key_here")
-let chatThread = ChatThread(connection: openAIAPIConnection,
-                            functions: [getCurrentWeather])
+let chatThread = ChatThread(functions: [getCurrentWeather])
     .addSystemMessage(content: "You are a helpful assistant.")
 ```
 
-Finally, call the `complete()` function to generate a response. If the assistant needs to perform a function during the conversation, it will use the function definitions you provided.
+Finally, call the `complete(using:)` function to generate a response. If the assistant needs to perform a function during the conversation, it will use the function definitions you provided.
 
 Please note that functions are only supported in non-streaming completions at this time.
 
