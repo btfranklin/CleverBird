@@ -3,7 +3,7 @@
 import Foundation
 
 extension ChatThread {
-    public func tokenCount() throws -> Int {
+    public func tokenCount(using model: ChatModel = .gpt4) throws -> Int {
 
         let tokenEncoder: TokenEncoder
         do {
@@ -14,7 +14,7 @@ extension ChatThread {
 
         var tokensPerMessage: Int
 
-        switch self.model {
+        switch model {
         case .gpt35Turbo:
             tokensPerMessage = 4
         case .gpt4, .gpt4Turbo:

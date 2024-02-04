@@ -5,12 +5,16 @@ import Get
 
 public class OpenAIAPIConnection {
 
-    public let apiKey: String
-    public let organization: String?
-    public let client: APIClient
+    let apiKey: String
+    let organization: String?
+    let client: APIClient
     let requestHeaders: [String:String]
 
-    public init(apiKey: String, organization: String? = nil, scheme: String = "https", host: String = "api.openai.com", port: Int = 443) {
+    public init(apiKey: String,
+                organization: String? = nil,
+                scheme: String = "https",
+                host: String = "api.openai.com",
+                port: Int = 443) {
         self.apiKey = apiKey
         self.organization = organization
 

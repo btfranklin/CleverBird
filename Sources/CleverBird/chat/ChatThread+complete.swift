@@ -1,8 +1,9 @@
 //  Created by B.T. Franklin on 5/5/23
 
 extension ChatThread {
-    public func complete(model: ChatModel? = nil,
-                         temperature: Percentage? = nil,
+    public func complete(using connection: OpenAIAPIConnection,
+                         model: ChatModel = .gpt4,
+                         temperature: Percentage = 0.7,
                          topP: Percentage? = nil,
                          stop: [String]? = nil,
                          maxTokens: Int? = nil,
@@ -12,13 +13,13 @@ extension ChatThread {
                          functionCallMode: FunctionCallMode? = nil) async throws -> ChatMessage {
 
         let requestBody = ChatCompletionRequestParameters(
-            model: model ?? self.model,
-            temperature: temperature ?? self.temperature,
-            topP: topP ?? self.topP,
-            stop: stop ?? self.stop,
-            maxTokens: maxTokens ?? self.maxTokens,
-            presencePenalty: presencePenalty ?? self.presencePenalty,
-            frequencyPenalty: frequencyPenalty ?? self.frequencyPenalty,
+            model: model,
+            temperature: temperature,
+            topP: topP,
+            stop: stop,
+            maxTokens: maxTokens,
+            presencePenalty: presencePenalty,
+            frequencyPenalty: frequencyPenalty,
             user: self.user,
             messages: self.messages,
             functions: functions ?? self.functions,
@@ -36,8 +37,8 @@ extension ChatThread {
                 FunctionRegistry.shared.clearFunctions()
             }
 
-            let request = try await self.connection.createChatCompletionRequest(for: requestBody)
-            let response = try await self.connection.client.send(request)
+            let request = try await connection.createChatCompletionRequest(for: requestBody)
+            let response = try await connection.client.send(request)
             let completion = response.value
             guard let firstChoiceMessage = completion.choices.first?.message else {
                 throw CleverBirdError.responseParsingFailed(message: "No message choice was available in completion response.")

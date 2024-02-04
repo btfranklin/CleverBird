@@ -4,8 +4,9 @@ import Foundation
 
 extension StreamableChatThread {
 
-    public func complete(model: ChatModel? = nil,
-                         temperature: Percentage? = nil,
+    public func complete(using connection: OpenAIAPIConnection,
+                         model: ChatModel = .gpt4,
+                         temperature: Percentage = 0.7,
                          topP: Percentage? = nil,
                          stop: [String]? = nil,
                          maxTokens: Int? = nil,
@@ -13,14 +14,14 @@ extension StreamableChatThread {
                          frequencyPenalty: Penalty? = nil) async throws -> AsyncThrowingStream<String, Swift.Error> {
 
         let requestBody = ChatCompletionRequestParameters(
-            model: model ?? self.chatThread.model,
-            temperature: temperature ?? self.chatThread.temperature,
-            topP: topP ?? self.chatThread.topP,
+            model: model,
+            temperature: temperature,
+            topP: topP,
             stream: true,
-            stop: stop ?? self.chatThread.stop,
-            maxTokens: maxTokens ?? self.chatThread.maxTokens,
-            presencePenalty: presencePenalty ?? self.chatThread.presencePenalty,
-            frequencyPenalty: frequencyPenalty ?? self.chatThread.frequencyPenalty,
+            stop: stop,
+            maxTokens: maxTokens,
+            presencePenalty: presencePenalty,
+            frequencyPenalty: frequencyPenalty,
             user: self.chatThread.user,
             messages: self.chatThread.messages
         )
@@ -30,7 +31,7 @@ extension StreamableChatThread {
             self.addMessage(message)
         }
 
-        let asyncByteStream = try await self.chatThread.connection.createChatCompletionAsyncByteStream(for: requestBody)
+        let asyncByteStream = try await connection.createChatCompletionAsyncByteStream(for: requestBody)
         
         return AsyncThrowingStream { [weak self] continuation in
             guard let strongSelf = self else {
@@ -64,6 +65,7 @@ extension StreamableChatThread {
                 do {
                     for try await line in asyncByteStream.lines {
                         guard let responseChunk = ChatStreamedResponseChunk.decode(from: line) else {
+                            print(line)
                             break
                         }
 

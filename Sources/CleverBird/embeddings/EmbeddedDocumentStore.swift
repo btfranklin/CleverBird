@@ -107,7 +107,7 @@ public class EmbeddedDocumentStore {
     private func sortVectors(_ vectors: [Vector],
                              bySimilarityTo queryVector: Vector,
                              topK: Int = 5,
-                             metric: SimilarityMetric = .cosine) -> ([Int], [Double]) {
+                             metric: SimilarityMetric = .cosine) -> ([Int], [Float]) {
         let similarities = metric.function(vectors, queryVector)
 
         // Sorting the vectors in descending order of similarity

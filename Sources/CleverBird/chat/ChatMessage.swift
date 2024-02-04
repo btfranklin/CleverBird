@@ -46,7 +46,7 @@ public struct ChatMessage: Codable, Identifiable {
         self.content = content
         self.name = functionCall?.name
         if role == .function {
-            // Attention: if the role is function I need to set the functionCall to nil, otherwise this will
+            // If the role is "function" I need to set functionCall to nil, otherwise this will
             // be encoded into the message which leads to an error.
             self.functionCall = nil
         } else {

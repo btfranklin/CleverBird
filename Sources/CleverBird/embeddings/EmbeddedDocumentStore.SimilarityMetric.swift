@@ -21,18 +21,18 @@ extension EmbeddedDocumentStore {
         }
 
         // Compute the dot product of each vector in the array with a query vector
-        private func calculateDotProduct(of vectors: [Vector], and queryVector: Vector) -> [Double] {
+        private func calculateDotProduct(of vectors: [Vector], and queryVector: Vector) -> [Float] {
             return vectors.map { vector in
-                var result: Double = 0.0
+                var result: Float = 0.0
 
                 // The dot product is a measure of the extent to which two vectors point in the same direction
-                vDSP_dotprD(vector, 1, queryVector, 1, &result, vDSP_Length(vector.count))
+                vDSP_dotpr(vector, 1, queryVector, 1, &result, vDSP_Length(vector.count))
                 return result
             }
         }
 
         // Calculate the cosine similarity between an array of vectors and a query vector
-        private func calculateCosineSimilarity(of vectors: [Vector], and queryVector: Vector) -> [Double] {
+        private func calculateCosineSimilarity(of vectors: [Vector], and queryVector: Vector) -> [Float] {
             let normVectors = normalize(vectors: vectors)
             let normQueryVector = normalize(vector: queryVector)
 
@@ -41,7 +41,7 @@ extension EmbeddedDocumentStore {
         }
 
         // Calculate the Euclidean similarity between an array of vectors and a query vector
-        private func calculateEuclideanSimilarity(of vectors: [Vector], and queryVector: Vector) -> [Double] {
+        private func calculateEuclideanSimilarity(of vectors: [Vector], and queryVector: Vector) -> [Float] {
             let diffVectors = vectors.map { zip($0, queryVector).map { $0.0 - $0.1 } }
             let distances = diffVectors.map { sqrt($0.map { $0 * $0 }.reduce(0, +)) }
 
@@ -50,11 +50,11 @@ extension EmbeddedDocumentStore {
         }
 
         // Helper function to get the Euclidean norm (or length) of a vector
-        private func calculateNorm(of vector: Vector) -> Double {
-            var result: Double = 0.0
+        private func calculateNorm(of vector: Vector) -> Float {
+            var result: Float = 0.0
 
             // Taking the dot product of the vector with itself, then square rooting the result gives us the Euclidean norm
-            vDSP_dotprD(vector, 1, vector, 1, &result, vDSP_Length(vector.count))
+            vDSP_dotpr(vector, 1, vector, 1, &result, vDSP_Length(vector.count))
             return sqrt(result)
         }
 
