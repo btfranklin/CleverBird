@@ -12,7 +12,7 @@ public enum ChatModel: Codable {
         case _ where modelString.starts(with: "gpt-3.5"):
             self = .gpt35Turbo
         case _ where modelString.starts(with: "gpt-4"):
-            self = .gpt4
+            self = .gpt4Turbo
         default:
             self = .specific(modelString)
         }
@@ -20,10 +20,7 @@ public enum ChatModel: Codable {
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.singleValueContainer()
-<<<<<<< HEAD
-=======
         let modelString = self.description
->>>>>>> main
         
         try container.encode(modelString)
     }
@@ -35,7 +32,7 @@ public enum ChatModel: Codable {
         case .gpt4:
             return "gpt-4"
         case .gpt4Turbo:
-            return "gpt-4-1106-preview"
+            return "gpt-4-turbo-preview"
         case .specific(let specificString):
             return specificString
         }
@@ -44,14 +41,6 @@ public enum ChatModel: Codable {
 
 extension ChatModel: CustomStringConvertible {
     public var description: String {
-        switch self {
-        case .gpt35Turbo:
-            return "gpt-3.5-turbo"
-        case .gpt4:
-            return "gpt-4"
-        case .specific(let string):
-            return string
-        }
-        
+        return modelString
     }
 }
