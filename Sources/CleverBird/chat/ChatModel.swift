@@ -19,17 +19,22 @@ public enum ChatModel: Codable {
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.singleValueContainer()
-        let modelString: String
+        let modelString = self.description
+        
+        try container.encode(modelString)
+    }
+}
 
+extension ChatModel: CustomStringConvertible {
+    public var description: String {
         switch self {
         case .gpt35Turbo:
-            modelString = "gpt-3.5-turbo"
+            return "gpt-3.5-turbo"
         case .gpt4:
-            modelString = "gpt-4"
-        case .specific(let specificString):
-            modelString = specificString
+            return "gpt-4"
+        case .specific(let string):
+            return string
         }
-
-        try container.encode(modelString)
+        
     }
 }
