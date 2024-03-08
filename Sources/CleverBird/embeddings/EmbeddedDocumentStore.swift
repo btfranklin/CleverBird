@@ -24,7 +24,7 @@ public class EmbeddedDocumentStore {
     private var similarityMetric: SimilarityMetric
 
     public init(connection: OpenAIAPIConnection,
-                model: EmbeddingModel = .textEmbeddingAda002,
+                model: EmbeddingModel = .textEmbedding3Small,
                 user: String? = nil,
                 similarityMetric: SimilarityMetric = .cosine) {
         self.connection = connection
