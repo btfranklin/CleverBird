@@ -40,7 +40,7 @@ class ContentEncodingTests: XCTestCase {
         {
           "type": "image_url",
           "image_url": {
-            "url": "data:image/jpeg;base64,aGVsbG8sIHdvcmxk"
+            "url": "data:image/jpeg;base64,SGVsbG8sIHdvcmxk"
           }
         }
         """.data(using: .utf8)!
@@ -58,7 +58,7 @@ class ContentEncodingTests: XCTestCase {
     func testTextDecoding() throws {
         let object = try decoder.decode(MessageContent.self, from: text)
         switch object {
-        case .imageUrl(let detail):
+        case .imageUrl(_):
             XCTFail()
         case .text(let text):
             XCTAssertEqual(text, "What’s in this image?")
@@ -66,15 +66,15 @@ class ContentEncodingTests: XCTestCase {
     }
     
     func testImageURLDecoding() throws {
-        let object = try decoder.decode(MessageContent.self, from: imageURL)
+        _ = try decoder.decode(MessageContent.self, from: imageURL)
     }
     
     func testImageURLDetailDecoding() throws {
-        let object = try decoder.decode(MessageContent.self, from: imageURLDetail)
+        _ = try decoder.decode(MessageContent.self, from: imageURLDetail)
     }
     
     func testImageDataDecoding() throws {
-        let object = try decoder.decode(MessageContent.self, from: imageData)
+        _ = try decoder.decode(MessageContent.self, from: imageData)
     }
     
     func testTextEncoding() throws {
@@ -83,7 +83,7 @@ class ContentEncodingTests: XCTestCase {
         
         let object = try decoder.decode(MessageContent.self, from: json)
         switch object {
-        case .imageUrl(let detail):
+        case .imageUrl(_):
             XCTFail()
         case .text(let text):
             XCTAssertEqual(text, "What’s in this image?")
@@ -99,7 +99,7 @@ class ContentEncodingTests: XCTestCase {
         case .imageUrl(let detail):
             XCTAssertEqual(detail.url, "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/2560px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg")
             XCTAssertEqual(detail.detail, nil)
-        case .text(let text):
+        case .text(_):
             XCTFail()
         }
     }
@@ -113,7 +113,7 @@ class ContentEncodingTests: XCTestCase {
         case .imageUrl(let detail):
             XCTAssertEqual(detail.url, "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/2560px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg")
             XCTAssertEqual(detail.detail, .high)
-        case .text(let text):
+        case .text(_):
             XCTFail()
         }
     }
@@ -127,7 +127,7 @@ class ContentEncodingTests: XCTestCase {
         case .imageUrl(let detail):
             XCTAssertEqual(detail.url, "data:image/jpeg;base64,aGVsbG8sIHdvcmxk")
             XCTAssertEqual(detail.detail, nil)
-        case .text(let text):
+        case .text(_):
             XCTFail()
         }
     }

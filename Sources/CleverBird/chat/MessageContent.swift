@@ -31,6 +31,15 @@ extension MessageContent {
             self.url = url
             self.detail = detail
         }
+        
+        public init(url: URL, detail: Detail? = nil) {
+            self.init(url: url.absoluteString, detail: detail)
+        }
+        
+        public init(imageData: Data, detail: Detail? = nil) {
+            let base64 = imageData.base64EncodedString()
+            self.init(url: "data:image/jpeg;base64,\(base64)", detail: detail)
+        }
     }
 }
     
