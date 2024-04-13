@@ -32,6 +32,16 @@ public class ChatThread: Codable {
         }
         return self
     }
+    
+    @discardableResult
+    public func addUserMessage(_ media: [MessageContent]) -> Self {
+        do {
+            try addMessage(ChatMessage(role: .user, media: .media(media)))
+        } catch {
+            print(error.localizedDescription)
+        }
+        return self
+    }
 
     @discardableResult
     public func addAssistantMessage(_ content: String) -> Self {

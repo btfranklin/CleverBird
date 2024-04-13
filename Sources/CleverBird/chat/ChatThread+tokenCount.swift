@@ -29,7 +29,32 @@ extension ChatThread {
                 let roleTokens = try tokenEncoder.encode(text: message.role.rawValue).count
                 let contentTokens: Int
                 if let content = message.content {
-                    contentTokens = try tokenEncoder.encode(text: content).count
+                    switch content {
+                    case .text(let text):
+                        contentTokens = try tokenEncoder.encode(text: text).count
+                    case .media(let media):
+                        var count = 0
+                        for medium in media {
+                            switch medium {
+                            case .text(let text):
+                                count += try tokenEncoder.encode(text: text).count
+                            case .imageUrl(let url):
+                                // See https://platform.openai.com/docs/guides/vision/calculating-costs
+                                switch url.detail {
+                                    // TODO: calculate real values for auto and high
+                                case .auto:
+                                    count += 1105
+                                case .high:
+                                    count += 1105
+                                case .low:
+                                    count += 85
+                                case .none:
+                                    count += 1105
+                                }
+                            }
+                        }
+                        contentTokens = count
+                    }
                 } else if let functionCall = message.functionCall {
                     let jsonEncoder = JSONEncoder()
                     let jsonData = try jsonEncoder.encode(functionCall)
