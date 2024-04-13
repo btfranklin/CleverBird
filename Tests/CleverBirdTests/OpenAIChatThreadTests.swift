@@ -13,7 +13,7 @@ class OpenAIChatThreadTests: XCTestCase {
 
         XCTAssertEqual(2, chatThread.getMessages().count)
         XCTAssertEqual(1, chatThread.getNonSystemMessages().count)
-        XCTAssertEqual(userMessageContent, chatThread.getNonSystemMessages().first?.content)
+        XCTAssertEqual(userMessageContent, chatThread.getNonSystemMessages().first?.content?.description)
     }
 
     func testTokenCount() throws {
