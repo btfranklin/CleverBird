@@ -7,8 +7,12 @@
 
 import Foundation
 
-public enum ChatContent {
-    
+public enum MessageContent {
+    case text(String)
+    case imageUrl(URLDetail)
+}
+
+extension MessageContent {
     public enum ContentType: String, Codable {
         case text
         case imageUrl = "image_url"
@@ -28,12 +32,9 @@ public enum ChatContent {
             self.detail = detail
         }
     }
-    
-    case text(String)
-    case imageUrl(URLDetail)
 }
     
-extension ChatContent: Codable {
+extension MessageContent: Codable {
 
     private enum CodingKeys: String, CodingKey {
         case type, text, imageUrl

@@ -56,7 +56,7 @@ class ContentEncodingTests: XCTestCase {
     }
         
     func testTextDecoding() throws {
-        let object = try decoder.decode(ChatContent.self, from: text)
+        let object = try decoder.decode(MessageContent.self, from: text)
         switch object {
         case .imageUrl(let detail):
             XCTFail()
@@ -66,22 +66,22 @@ class ContentEncodingTests: XCTestCase {
     }
     
     func testImageURLDecoding() throws {
-        let object = try decoder.decode(ChatContent.self, from: imageURL)
+        let object = try decoder.decode(MessageContent.self, from: imageURL)
     }
     
     func testImageURLDetailDecoding() throws {
-        let object = try decoder.decode(ChatContent.self, from: imageURLDetail)
+        let object = try decoder.decode(MessageContent.self, from: imageURLDetail)
     }
     
     func testImageDataDecoding() throws {
-        let object = try decoder.decode(ChatContent.self, from: imageData)
+        let object = try decoder.decode(MessageContent.self, from: imageData)
     }
     
     func testTextEncoding() throws {
-        let content = ChatContent.text("What’s in this image?")
+        let content = MessageContent.text("What’s in this image?")
         let json = try encoder.encode(content)
         
-        let object = try decoder.decode(ChatContent.self, from: json)
+        let object = try decoder.decode(MessageContent.self, from: json)
         switch object {
         case .imageUrl(let detail):
             XCTFail()
@@ -91,9 +91,9 @@ class ContentEncodingTests: XCTestCase {
     }
     
     func testImageURLEncoding() throws {
-        let content = ChatContent.imageUrl(ChatContent.URLDetail(url: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/2560px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg"))
+        let content = MessageContent.imageUrl(MessageContent.URLDetail(url: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/2560px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg"))
         let json = try encoder.encode(content)
-        let object = try decoder.decode(ChatContent.self, from: json)
+        let object = try decoder.decode(MessageContent.self, from: json)
         
         switch object {
         case .imageUrl(let detail):
@@ -105,9 +105,9 @@ class ContentEncodingTests: XCTestCase {
     }
     
     func testImageURLDetailEncoding() throws {
-        let content = ChatContent.imageUrl(ChatContent.URLDetail(url: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/2560px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg", detail: .high))
+        let content = MessageContent.imageUrl(MessageContent.URLDetail(url: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/2560px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg", detail: .high))
         let json = try encoder.encode(content)
-        let object = try decoder.decode(ChatContent.self, from: json)
+        let object = try decoder.decode(MessageContent.self, from: json)
         
         switch object {
         case .imageUrl(let detail):
@@ -119,9 +119,9 @@ class ContentEncodingTests: XCTestCase {
     }
     
     func testImageDataEncoding() throws {
-        let content = ChatContent.imageUrl(ChatContent.URLDetail(url: "data:image/jpeg;base64,aGVsbG8sIHdvcmxk"))
+        let content = MessageContent.imageUrl(MessageContent.URLDetail(url: "data:image/jpeg;base64,aGVsbG8sIHdvcmxk"))
         let json = try encoder.encode(content)
-        let object = try decoder.decode(ChatContent.self, from: json)
+        let object = try decoder.decode(MessageContent.self, from: json)
         
         switch object {
         case .imageUrl(let detail):
