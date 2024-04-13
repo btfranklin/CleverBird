@@ -7,14 +7,14 @@
 
 import Foundation
 
-enum ChatContent {
+public enum ChatContent {
     
-    private enum ContentType: String, Codable {
+    public enum ContentType: String, Codable {
         case text
         case imageUrl = "image_url"
     }
     
-    struct URLDetail: Codable {
+    public struct URLDetail: Codable {
         
         public enum Detail: String, Codable {
             case low, high, auto
@@ -39,7 +39,7 @@ extension ChatContent: Codable {
         case type, text, imageUrl
     }
     
-    init(from decoder: Decoder) throws {
+    public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let type = try container.decode(ContentType.self, forKey: .type)
         
@@ -53,7 +53,7 @@ extension ChatContent: Codable {
         }
     }
     
-    func encode(to encoder: Encoder) throws {
+    public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         switch self {
         case .text(let text):
