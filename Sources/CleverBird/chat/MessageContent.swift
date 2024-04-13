@@ -18,7 +18,7 @@ extension MessageContent {
         case imageUrl = "image_url"
     }
     
-    public struct URLDetail: Codable {
+    public struct URLDetail: Codable, Equatable {
         
         public enum Detail: String, Codable {
             case low, high, auto
@@ -63,6 +63,19 @@ extension MessageContent: Codable {
         case .imageUrl(let urlDetail):
             try container.encode(ContentType.imageUrl.rawValue, forKey: .type)
             try container.encode(urlDetail, forKey: .imageUrl)
+        }
+    }
+}
+
+extension MessageContent: Equatable {
+    public static func == (lhs: MessageContent, rhs: MessageContent) -> Bool {
+        switch (lhs, rhs) {
+        case (.text(let lhsText), .text(let rhsText)):
+            return lhsText == rhsText
+        case (.imageUrl(let lhsUrlDetail), .imageUrl(let rhsUrlDetail)):
+            return lhsUrlDetail == rhsUrlDetail
+        default:
+            return false
         }
     }
 }
