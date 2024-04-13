@@ -7,18 +7,18 @@
 
 import Foundation
 
-public enum MessageContent {
+public enum MessageContent: Hashable {
     case text(String)
     case imageUrl(URLDetail)
 }
 
 extension MessageContent {
-    public enum ContentType: String, Codable {
+    public enum ContentType: String, Codable, Hashable {
         case text
         case imageUrl = "image_url"
     }
     
-    public struct URLDetail: Codable, Equatable {
+    public struct URLDetail: Codable, Equatable, Hashable {
         
         public enum Detail: String, Codable {
             case low, high, auto

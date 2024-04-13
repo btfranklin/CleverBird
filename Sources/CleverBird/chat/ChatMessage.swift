@@ -36,14 +36,21 @@ public struct ChatMessage: Codable, Identifiable {
                 content: String? = nil,
                 id: String? = nil,
                 functionCall: FunctionCall? = nil) throws {
+        try self.init(role: role, media: content != nil ? .text(content!) : nil, id: id, functionCall: functionCall)
+    }
 
+    public init(role: Role,
+                media: ChatMessage.Content?,
+                id: String? = nil,
+                functionCall: FunctionCall? = nil) throws {
+            
         // Validation: Content is required for all messages except assistant messages with function calls.
-        if content == nil && !(role == .assistant && functionCall != nil) {
+        if media == nil && !(role == .assistant && functionCall != nil) {
             throw CleverBirdError.invalidMessageContent
         }
 
         self.role = role
-        self.content = content.map { .text($0) }
+        self.content = media
         self.name = functionCall?.name
         if role == .function {
             // If the role is "function" I need to set functionCall to nil, otherwise this will
@@ -58,7 +65,9 @@ public struct ChatMessage: Codable, Identifiable {
         } else {
             var hasher = Hasher()
             hasher.combine(self.role)
-            hasher.combine(content ?? "")
+            if let content {
+                hasher.combine(content)
+            }
             let hashValue = abs(hasher.finalize())
             let timestamp = Int(Date.now.timeIntervalSince1970*10000)
 
@@ -95,7 +104,7 @@ extension ChatMessage: Equatable {
 
 extension ChatMessage {
     
-    public enum Content: Codable, Equatable, CustomStringConvertible {
+    public enum Content: Codable, Equatable, CustomStringConvertible, Hashable {
         
         case text(String)
         case media([MessageContent])
