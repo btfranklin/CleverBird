@@ -3,7 +3,7 @@
 public class StreamableChatThread {
     
     var streamingTask: Task<Void, Error>?
-    let chatThread: ChatThread
+    public let chatThread: ChatThread
 
     init(chatThread: ChatThread) {
         self.chatThread = chatThread
