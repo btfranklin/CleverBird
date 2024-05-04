@@ -2,8 +2,6 @@
 
 import Get
 
-private let chatCompletionPath = "/v1/chat/completions"
-
 extension OpenAIAPIConnection {
     func createChatCompletionRequest(for body: Encodable) async throws -> Request<ChatCompletionResponse> {
         Request<ChatCompletionResponse>(

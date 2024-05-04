@@ -9,11 +9,13 @@ public class OpenAIAPIConnection {
     let organization: String?
     public let client: APIClient
     let requestHeaders: [String:String]
+    let chatCompletionPath: String
 
     public init(apiKey: String,
                 organization: String? = nil,
                 scheme: String = "https",
                 host: String = "api.openai.com",
+                chatCompletionPath: String = "/v1/chat/completions",
                 port: Int = 443) {
         self.apiKey = apiKey
         self.organization = organization
@@ -23,6 +25,8 @@ public class OpenAIAPIConnection {
         urlComponents.host = host
         urlComponents.port = port
         let openAIAPIURL = urlComponents.url
+        
+        self.chatCompletionPath = chatCompletionPath
 
         let clientConfiguration = APIClient.Configuration(baseURL: openAIAPIURL)
         clientConfiguration.encoder.keyEncodingStrategy = .convertToSnakeCase
