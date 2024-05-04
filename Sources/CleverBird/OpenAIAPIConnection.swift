@@ -15,7 +15,7 @@ public class OpenAIAPIConnection {
                 organization: String? = nil,
                 scheme: String = "https",
                 host: String = "api.openai.com",
-                chatCompletionPath: String = "/v1/chat/completions",
+                chatCompletionPath: String? =  nil,
                 port: Int = 443) {
         self.apiKey = apiKey
         self.organization = organization
@@ -26,7 +26,7 @@ public class OpenAIAPIConnection {
         urlComponents.port = port
         let openAIAPIURL = urlComponents.url
         
-        self.chatCompletionPath = chatCompletionPath
+        self.chatCompletionPath = chatCompletionPath ?? "/v1/chat/completions"
 
         let clientConfiguration = APIClient.Configuration(baseURL: openAIAPIURL)
         clientConfiguration.encoder.keyEncodingStrategy = .convertToSnakeCase
