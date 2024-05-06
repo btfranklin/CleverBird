@@ -11,7 +11,8 @@ extension StreamableChatThread {
                          stop: [String]? = nil,
                          maxTokens: Int? = nil,
                          presencePenalty: Penalty? = nil,
-                         frequencyPenalty: Penalty? = nil) async throws -> AsyncThrowingStream<String, Swift.Error> {
+                         frequencyPenalty: Penalty? = nil,
+                         streamOptions: StreamOptions? = nil) async throws -> AsyncThrowingStream<String, Swift.Error> {
 
         let requestBody = ChatCompletionRequestParameters(
             model: model,
@@ -23,7 +24,8 @@ extension StreamableChatThread {
             presencePenalty: presencePenalty,
             frequencyPenalty: frequencyPenalty,
             user: self.chatThread.user,
-            messages: self.chatThread.messages
+            messages: self.chatThread.messages,
+            streamOptions: streamOptions
         )
 
         // Define the callback closure that appends the message to the chat thread
@@ -71,6 +73,10 @@ extension StreamableChatThread {
 
                         responseMessageId = responseChunk.id
 
+                        if let usage = responseChunk.usage {
+                            strongSelf.usage = usage
+                        }
+                        
                         if let deltaRole = responseChunk.choices.first?.delta.role {
                             responseMessageRole = deltaRole
                             continue

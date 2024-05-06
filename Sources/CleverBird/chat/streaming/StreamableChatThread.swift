@@ -1,9 +1,5 @@
 //  Created by B.T. Franklin on 5/11/23
 
-public struct StreamOptions: Codable {
-    let includeUsage: Bool
-}
-
 public final class StreamableChatThread {
     
     var streamingTask: Task<Void, Error>?
