@@ -89,6 +89,9 @@ extension StreamableChatThread {
                         } else {
                             responseMessageContent = deltaContent
                         }
+                        
+                        strongSelf.usage = responseChunk.usage
+                        
                         continuation.yield(deltaContent)
                     }
                     // Finished normally

@@ -2,6 +2,12 @@
 
 import Foundation
 
+public struct Usage: Codable {
+    let promptTokens: Int
+    let completionTokens: Int
+    let totalTokens: Int
+}
+
 public struct ChatCompletionResponse: Codable, Identifiable {
 
     public struct Choice: Codable {
@@ -23,14 +29,8 @@ public struct ChatCompletionResponse: Codable, Identifiable {
         }
     }
 
-    public struct Usage: Codable {
-        let promptTokens: Int
-        let completionTokens: Int
-        let totalTokens: Int
-    }
-
-    public let choices: [Choice]
-    public let usage: Usage
+    let choices: [Choice]
+    let usage: Usage
     public let id: String
 
     enum CodingKeys: String, CodingKey {

@@ -149,7 +149,7 @@ extension ChatMessage {
                         return textValue
                     }
                 }
-                return "Media content with no text"
+                return ""
             case .text(let text):
                 return text
             }
