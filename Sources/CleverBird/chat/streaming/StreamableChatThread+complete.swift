@@ -72,6 +72,10 @@ extension StreamableChatThread {
                         }
 
                         responseMessageId = responseChunk.id
+                        
+                        if let usage = responseChunk.usage {
+                            strongSelf.usage = usage
+                        }
 
                         if let deltaRole = responseChunk.choices.first?.delta.role {
                             responseMessageRole = deltaRole
@@ -90,10 +94,6 @@ extension StreamableChatThread {
                             responseMessageContent = currentMessageContent + deltaContent
                         } else {
                             responseMessageContent = deltaContent
-                        }
-                        if let usage = responseChunk.usage {
-                            strongSelf.usage = usage
-                            print(usage)
                         }
                         
                         continuation.yield(deltaContent)
