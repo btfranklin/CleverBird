@@ -107,6 +107,19 @@ Just like with the non-streamed completion, the message will be automatically
 appended onto the thread after it has finished streaming, but the stream
 allows you to see it as it's coming through.
 
+To include usage (the number of tokens used in the prompt and completion), add set `streamOptions` in the `complete` method. The usage is available as a property of `StreamableChatThread` after the stream has completed.
+
+```swift
+let chatThread = ChatThread().withStreaming()
+let completionStream = try await chatThread.complete(using: openAIAPIConnection, streamOptions: StreamOptions(includeUsage: true))
+for try await messageChunk in completionStream {
+    print("Received message chunk: \(messageChunk)")
+}
+if let usage = completionStream.usage {
+    print("Usage: \(usage)")
+}
+```
+
 Calculate the token count for messages in the chat thread:
 
 ```swift
