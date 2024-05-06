@@ -12,7 +12,7 @@ extension StreamableChatThread {
                          maxTokens: Int? = nil,
                          presencePenalty: Penalty? = nil,
                          frequencyPenalty: Penalty? = nil,
-                         streamOptions: StreamOptions? = nil) async throws -> AsyncThrowingStream<String, Swift.Error> {
+                         includeUsage: Bool = false) async throws -> AsyncThrowingStream<String, Swift.Error> {
 
         let requestBody = ChatCompletionRequestParameters(
             model: model,
@@ -25,7 +25,7 @@ extension StreamableChatThread {
             frequencyPenalty: frequencyPenalty,
             user: self.chatThread.user,
             messages: self.chatThread.messages,
-            streamOptions: streamOptions
+            streamOptions:  includeUsage ? StreamOptions(includeUsage: true) : nil
         )
 
         // Define the callback closure that appends the message to the chat thread

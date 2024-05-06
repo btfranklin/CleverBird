@@ -111,7 +111,7 @@ To include usage (the number of tokens used in the prompt and completion), add s
 
 ```swift
 let chatThread = ChatThread().withStreaming()
-let completionStream = try await chatThread.complete(using: openAIAPIConnection, streamOptions: StreamOptions(includeUsage: true))
+let completionStream = try await chatThread.complete(using: openAIAPIConnection, includeUsage: true)
 for try await messageChunk in completionStream {
     print("Received message chunk: \(messageChunk)")
 }
