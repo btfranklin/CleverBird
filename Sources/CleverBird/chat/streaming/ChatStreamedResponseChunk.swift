@@ -19,6 +19,7 @@ struct ChatStreamedResponseChunk: Codable, Identifiable {
     }
     let choices: [Choice]
     let id: String
+    let usage: Usage?
 }
 
 extension ChatStreamedResponseChunk {

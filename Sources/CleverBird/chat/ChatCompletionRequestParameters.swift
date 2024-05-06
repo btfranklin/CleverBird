@@ -13,6 +13,7 @@ public struct ChatCompletionRequestParameters: Codable {
     public let messages: [ChatMessage]
     public let functions: [Function]?
     public let functionCallMode: FunctionCallMode?
+    public let streamOptions: StreamOptions?
 
     public init(model: ChatModel,
                 temperature: Percentage,
@@ -25,7 +26,8 @@ public struct ChatCompletionRequestParameters: Codable {
                 user: String? = nil,
                 messages: [ChatMessage],
                 functions: [Function]? = nil,
-                functionCallMode: FunctionCallMode? = nil) {
+                functionCallMode: FunctionCallMode? = nil,
+                streamOptions: StreamOptions? = nil) {
         self.model = model
         self.temperature = temperature
         self.topP = topP
@@ -38,5 +40,6 @@ public struct ChatCompletionRequestParameters: Codable {
         self.messages = messages
         self.functions = functions
         self.functionCallMode = functionCallMode
+        self.streamOptions = streamOptions
     }
 }
