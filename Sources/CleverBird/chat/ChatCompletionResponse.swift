@@ -3,9 +3,9 @@
 import Foundation
 
 public struct Usage: Codable {
-    let promptTokens: Int
-    let completionTokens: Int
-    let totalTokens: Int
+    public let promptTokens: Int
+    public let completionTokens: Int
+    public let totalTokens: Int
 }
 
 public struct ChatCompletionResponse: Codable, Identifiable {
