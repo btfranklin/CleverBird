@@ -1,9 +1,11 @@
 //  Created by B.T. Franklin on 5/11/23
 
-public class StreamableChatThread {
+public final class StreamableChatThread {
     
     var streamingTask: Task<Void, Error>?
     let chatThread: ChatThread
+    
+    public var usage: Usage? = nil
 
     init(chatThread: ChatThread) {
         self.chatThread = chatThread

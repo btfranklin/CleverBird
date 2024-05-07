@@ -11,7 +11,28 @@ extension ChatThread {
                          frequencyPenalty: Penalty? = nil,
                          functions: [Function]? = nil,
                          functionCallMode: FunctionCallMode? = nil) async throws -> ChatMessage {
-
+        try await completeIncludeUsage(using: connection,
+                                    model: model,
+                                    temperature: temperature,
+                                    topP: topP,
+                                    stop: stop,
+                                    maxTokens: maxTokens,
+                                    presencePenalty: presencePenalty,
+                                    frequencyPenalty: frequencyPenalty,
+                                    functions: functions,
+                                    functionCallMode: functionCallMode).0
+    }
+    
+    public func completeIncludeUsage(using connection: OpenAIAPIConnection,
+                         model: ChatModel = .gpt4,
+                         temperature: Percentage = 0.7,
+                         topP: Percentage? = nil,
+                         stop: [String]? = nil,
+                         maxTokens: Int? = nil,
+                         presencePenalty: Penalty? = nil,
+                         frequencyPenalty: Penalty? = nil,
+                         functions: [Function]? = nil,
+                         functionCallMode: FunctionCallMode? = nil) async throws -> (ChatMessage, Usage) {
         let requestBody = ChatCompletionRequestParameters(
             model: model,
             temperature: temperature,
@@ -47,7 +68,7 @@ extension ChatThread {
             // Append the response message to the thread
             addMessage(firstChoiceMessage)
 
-            return firstChoiceMessage
+            return (firstChoiceMessage, completion.usage)
 
         } catch {
             throw CleverBirdError.requestFailed(message: error.localizedDescription)

@@ -2,6 +2,12 @@
 
 import Foundation
 
+public struct Usage: Codable {
+    public let promptTokens: Int
+    public let completionTokens: Int
+    public let totalTokens: Int
+}
+
 struct ChatCompletionResponse: Codable, Identifiable {
 
     struct Choice: Codable {
@@ -21,12 +27,6 @@ struct ChatCompletionResponse: Codable, Identifiable {
             case finishReason
             case functionCall
         }
-    }
-
-    struct Usage: Codable {
-        let promptTokens: Int
-        let completionTokens: Int
-        let totalTokens: Int
     }
 
     let choices: [Choice]
