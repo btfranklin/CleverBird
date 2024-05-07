@@ -1,9 +1,4 @@
-//
-//  ChatContent.swift
-//  
-//
 //  Created by Ronald Mannak on 4/12/24.
-//
 
 import Foundation
 

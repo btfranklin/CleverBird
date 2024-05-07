@@ -1,9 +1,4 @@
-//
-//  ContentEncodingTests.swift
-//
-//
 //  Created by Ronald Mannak on 4/12/24.
-//
 
 import XCTest
 @testable import CleverBird

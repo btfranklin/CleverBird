@@ -1,9 +1,4 @@
-//
-//  StreamOptions.swift
-//
-//
 //  Created by Ronald Mannak on 5/6/24.
-//
 
 import Foundation
 
