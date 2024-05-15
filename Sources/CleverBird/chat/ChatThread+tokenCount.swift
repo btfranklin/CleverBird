@@ -17,7 +17,9 @@ extension ChatThread {
         switch model {
         case .gpt35Turbo:
             tokensPerMessage = 4
-        case .gpt4:
+        case .gpt4, .gpt4Turbo:
+            tokensPerMessage = 3
+        case .gpt4o:
             tokensPerMessage = 3
         case .specific(_):
             tokensPerMessage = 3

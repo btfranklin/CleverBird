@@ -59,7 +59,7 @@ The `complete(using:)` method also includes various optional parameters:
 ```swift
 let completion = chatThread.complete(
     using: openAIAPIConnection, 
-    model: .gpt4, 
+    model: .gpt4o, 
     temperature: 0.7, 
     maxTokens: 500
 )

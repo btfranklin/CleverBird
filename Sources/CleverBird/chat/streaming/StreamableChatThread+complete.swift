@@ -5,7 +5,7 @@ import Foundation
 extension StreamableChatThread {
 
     public func complete(using connection: OpenAIAPIConnection,
-                         model: ChatModel = .gpt4,
+                         model: ChatModel = .gpt4o,
                          temperature: Percentage = 0.7,
                          topP: Percentage? = nil,
                          stop: [String]? = nil,
