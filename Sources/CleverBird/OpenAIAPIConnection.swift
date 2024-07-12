@@ -7,16 +7,19 @@ public class OpenAIAPIConnection {
 
     let apiKey: String
     let organization: String?
+    let project: String?
     public let client: APIClient
     let requestHeaders: [String:String]
 
     public init(apiKey: String,
                 organization: String? = nil,
+                project: String? = nil,
                 scheme: String = "https",
                 host: String = "api.openai.com",
                 port: Int = 443) {
         self.apiKey = apiKey
         self.organization = organization
+        self.project = project
 
         var urlComponents = URLComponents()
         urlComponents.scheme = scheme
@@ -36,6 +39,9 @@ public class OpenAIAPIConnection {
         ]
         if let organization {
             requestHeaders["OpenAI-Organization"] = organization
+        }
+        if let project {
+            requestHeaders["OpenAI-Project"] = project
         }
         self.requestHeaders = requestHeaders
     }
