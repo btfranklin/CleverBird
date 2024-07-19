@@ -19,7 +19,7 @@ extension ChatThread {
             tokensPerMessage = 4
         case .gpt4, .gpt4Turbo:
             tokensPerMessage = 3
-        case .gpt4o:
+        case .gpt4o, .gpt4oMini:
             tokensPerMessage = 3
         case .specific(_):
             tokensPerMessage = 3
