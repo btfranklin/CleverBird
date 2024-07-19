@@ -1,5 +1,6 @@
 public enum ChatModel: Codable {
     case gpt35Turbo
+    case gpt4oMini
     case gpt4
     case gpt4Turbo
     case gpt4o
@@ -12,6 +13,8 @@ public enum ChatModel: Codable {
         switch modelString {
         case _ where modelString.starts(with: "gpt-3.5"):
             self = .gpt35Turbo
+        case _ where modelString.starts(with: "gpt-4o-mini"):
+            self = .gpt4oMini
         case _ where modelString.starts(with: "gpt-4o"):
             self = .gpt4o
         case _ where modelString.starts(with: "gpt-4-turbo"):
@@ -36,6 +39,8 @@ extension ChatModel: CustomStringConvertible {
         switch self {
         case .gpt35Turbo:
             return "gpt-3.5-turbo"
+        case .gpt4oMini:
+            return "gpt-4o-mini"
         case .gpt4o:
             return "gpt-4o"
         case .gpt4Turbo:
