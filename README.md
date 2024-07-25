@@ -1,5 +1,7 @@
 # CleverBird
 
+![CleverBird banner](https://raw.githubusercontent.com/btfranklin/CleverBird/main/.github/social%20preview/CleverBird_social_preview.jpg "CleverBird: Easily connect your Swift application to OpenAI's chat endpoints with a superior, best-in-class DX. 100% open source, 100% free.")
+
 [![Platforms](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fbtfranklin%2FCleverBird%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/btfranklin/CleverBird)
 [![Swift versions](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fbtfranklin%2FCleverBird%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/btfranklin/CleverBird)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/btfranklin/CleverBird/blob/main/LICENSE)
@@ -18,11 +20,13 @@ Please note that `CleverBird` is an *unofficial* package, not provided by OpenAI
 ## Features
 
 ### Core Features
+
 - Asynchronous API calls with Swift's async/await syntax
 - Streamed responses for real-time generated content
 - Built-in token counting for usage limit calculations
 
 ### Specialized Features
+
 - Token Encoding: Facilitates token counting and encoding through the `TokenEncoder` class.
 - Document Embedding and Similarity Queries: Utilize the `EmbeddedDocumentStore` class for managing and querying document similarities.
 
